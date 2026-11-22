@@ -957,3 +957,6 @@ main:has(> .about)+.trust{margin-top:0;border-top:0}
 .ftr .logo-bd{background:#e5131d;color:#fff}
 .lang-bn .sec-head h2,.lang-bn .about h2,.lang-bn .gtiles h2{font-family:'Noto Sans Bengali','Jost',sans-serif;font-weight:600;letter-spacing:0}
 @media(max-width:420px){.hdr .logo-txt b{letter-spacing:.11em!important}.hdr .logo{margin-right:10px}.logo-bd{margin-left:3px}}
+/* v2.3.1 phone header: clear gap between logo and EN */
+@media(max-width:480px){.hdr-in{gap:0}.hdr .logo{margin-right:auto!important;flex:0 1 auto;min-width:0}.hdr .logo-txt b{font-size:19px!important;letter-spacing:.08em!important}.hdr-act{margin-left:16px;gap:2px}.lang-sw{min-width:36px;height:34px;padding:0 6px;font-size:12px}}
+@media(max-width:370px){.hdr .logo-txt b{font-size:17px!important;letter-spacing:.05em!important}.hdr-act{margin-left:12px}}
