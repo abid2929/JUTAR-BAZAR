@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Dhaka');
 mb_internal_encoding('UTF-8');
 
 define('JB_ROOT', dirname(__DIR__));
-define('JB_VERSION', '2.2.0');
+define('JB_VERSION', '2.3.0');
 
 /** Private data folder: ~/jutarbazar-data (outside public_html) if possible, else ./data (blocked by .htaccess). */
 function jb_data_dir(): string {
@@ -78,8 +78,8 @@ function db(): PDO {
 /* ---------- settings ---------- */
 function jb_defaults(): array {
     return [
-        'shop_name' => 'জুতার বাজার',
-        'shop_name_en' => 'JUTAR BAZAR',
+        'shop_name' => 'জুতার বাজার বিডি',
+        'shop_name_en' => 'JUTAR BAZAR BD',
         'logo' => '',
         'tagline' => 'Step into more',
         'announce' => 'Cash on delivery all over Bangladesh  •  Easy size exchange  •  Every pair checked before dispatch',
@@ -96,11 +96,11 @@ function jb_defaults(): array {
         'promo_btn' => 'Explore new arrivals',
         'free_over' => '0',
         'about' => 'We believe a good pair of shoes starts a good day. So we pick every pair for quality, help you get the right size, and keep our prices honest.',
-        'phone' => '01700000000',
-        'whatsapp' => '8801700000000',
+        'phone' => '01624-244920',
+        'whatsapp' => '8801624244920',
         'email' => '',
-        'address' => 'Dhaka, Bangladesh',
-        'facebook' => '',
+        'address' => 'Opposite Jamuna Future Park, Nandha Bus Stand (Life BD Shop), Dhaka',
+        'facebook' => 'https://www.facebook.com/share/1A5UHxTjZH/',
         'instagram' => '',
         'tiktok' => '',
         'youtube' => '',
@@ -109,10 +109,10 @@ function jb_defaults(): array {
         'delivery_in_label' => 'ঢাকা সিটির ভেতরে',
         'delivery_out_label' => 'ঢাকা সিটির বাইরে',
         'currency' => '৳',
-        'accent' => '#8c6a3f',
+        'accent' => '#e5131d',
         'gemini_key' => '',
         'notify_email' => '',
-        'meta_desc' => 'Jutar Bazar: running shoes, sneakers, loafers, formal shoes and sandals. Cash on delivery all over Bangladesh.',
+        'meta_desc' => 'JUTAR BAZAR BD: running shoes, sneakers, loafers, formal shoes and sandals. Cash on delivery all over Bangladesh.',
         'pixel_id' => '',
         'ga_id' => '',
         'wa_popup' => 'Looking for a pair? Ask us anything about size, price or your order on WhatsApp.',
@@ -126,8 +126,8 @@ function jb_defaults(): array {
         'promo_sub_bn' => 'রানিং থেকে ফরমাল, প্রতি সপ্তাহে নতুন ডিজাইন। আজই বেছে নিন আপনার জোড়া।',
         'promo_btn_bn' => 'নতুন জুতা দেখুন',
         'about_bn' => 'আমরা বিশ্বাস করি, ভালো একজোড়া জুতা দিয়েই ভালো দিনের শুরু। তাই প্রতিটি জোড়া মান দেখে বাছাই করি, সঠিক সাইজ পেতে সাহায্য করি, আর দাম রাখি সৎ।',
-        'address_bn' => 'ঢাকা, বাংলাদেশ',
-        'meta_desc_bn' => 'জুতার বাজার: রানিং শু, স্নিকার্স, লোফার, ফরমাল শু আর স্যান্ডেল। সারা বাংলাদেশে ক্যাশ অন ডেলিভারি।',
+        'address_bn' => 'যমুনা ফিউচার পার্কের বিপরীতে, নন্দা বাস স্ট্যান্ড (Life BD Shop), ঢাকা',
+        'meta_desc_bn' => 'জুতার বাজার বিডি: অনলাইনে কেনাকাটার বিশ্বস্ত প্ল্যাটফর্ম। রানিং শু, স্নিকার্স, লোফার, ফরমাল শু আর স্যান্ডেল। সারা বাংলাদেশে ক্যাশ অন ডেলিভারি।',
         'wa_popup_bn' => 'জুতা খুঁজছেন? সাইজ, দাম বা অর্ডার নিয়ে যেকোনো প্রশ্ন হোয়াটসঅ্যাপে করুন।',
         'footer_note_bn' => 'প্রতিটি জোড়ায় আরাম, স্টাইল আর আস্থা।',
         'size_guide' => '1',
@@ -245,7 +245,7 @@ function lang(): string {
     $q = (string)($_GET['lang'] ?? '');
     if ($q === 'en' || $q === 'bn') { if (!headers_sent()) setcookie('jb_lang', $q, ['expires' => time() + 31536000, 'path' => '/', 'samesite' => 'Lax']); return $l = $q; }
     $c = (string)($_COOKIE['jb_lang'] ?? '');
-    return $l = ($c === 'bn' ? 'bn' : 'en');
+    return $l = ($c === 'en' ? 'en' : 'bn'); // Bangla first (most orders come from outside Dhaka); English only when chosen
 }
 function is_bn(): bool { return lang() === 'bn'; }
 /** Pick the English or Bangla text for the current visitor. */

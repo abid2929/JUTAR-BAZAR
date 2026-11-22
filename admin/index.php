@@ -73,7 +73,7 @@ if ($a === 'caption' && $isPost) {
     $cols = array_column(collections(false), null, 'id');
     $c = $cols[(int)($_POST['collection_id'] ?? 0)] ?? null;
     $in = ['name' => trim((string)($_POST['name'] ?? '')), 'collection' => $c['name'] ?? '', 'collection_slug' => $c['slug'] ?? '', 'brand' => trim((string)($_POST['brand'] ?? '')),
-        'price' => (int)($_POST['price'] ?? 0), 'old_price' => (int)($_POST['old_price'] ?? 0), 'sizes' => (string)($_POST['sizes'] ?? ''), 'colors' => (string)($_POST['colors'] ?? ''), 'notes' => mb_substr((string)($_POST['notes'] ?? ''), 0, 300)];
+        'price' => (int)($_POST['price'] ?? 0), 'old_price' => (int)($_POST['old_price'] ?? 0), 'sizes' => (string)($_POST['sizes'] ?? ''), 'colors' => (string)($_POST['colors'] ?? ''), 'gender' => (string)($_POST['gender'] ?? ''), 'notes' => mb_substr((string)($_POST['notes'] ?? ''), 0, 300)];
     $b64 = ''; $mime = 'image/jpeg';
     $img = (string)($_POST['image'] ?? '');
     if ($img !== '' && !preg_match('~^https?://~', $img)) {
@@ -85,7 +85,7 @@ if ($a === 'caption' && $isPost) {
     }
     $err = '';
     $out = null;
-    $tone = in_array($_POST['tone'] ?? '', ['premium', 'offer', 'festive', 'casual'], true) ? $_POST['tone'] : 'premium';
+    $tone = in_array($_POST['tone'] ?? '', ['premium', 'offer', 'festive', 'casual', 'simple'], true) ? $_POST['tone'] : 'premium';
     if (($_POST['mode'] ?? 'ai') !== 'template') $out = caption_gemini($in, $b64, $mime, $err, $tone);
     if ($out) $out += array_diff_key(caption_template($in, null, $tone), $out); // fill anything the AI skipped
     if (!$out) { $out = caption_template($in, null, $tone); $out['note'] = S('gemini_key') ? 'AI এখন সাড়া দেয়নি, তাই টেমপ্লেট দিয়ে লেখা হলো।' : 'টেমপ্লেট দিয়ে লেখা হলো। আরও ভালো লেখার জন্য সেটিংসে ফ্রি Gemini key দিন।'; }
@@ -316,7 +316,7 @@ case 'dash':
     $sumT = array_sum(array_column($days, 1)); $sumN = array_sum(array_column($days, 2));
     admin_head('ড্যাশবোর্ড');
     ?>
-    <div class="welcome"><div><small class="w-k">JUTAR BAZAR · ড্যাশবোর্ড</small><h1>স্বাগতম</h1><p>আজ <?= bn_num(date('d/m/Y')) ?>। নতুন জুতা পোস্ট করতে নিচের বাটনে চাপুন।</p></div><a class="btn gold" href="<?= e(aurl('product')) ?>">+ নতুন প্রোডাক্ট পোস্ট</a></div>
+    <div class="welcome"><div><small class="w-k"><?= e(S('shop_name_en')) ?> · ড্যাশবোর্ড</small><h1>স্বাগতম</h1><p>আজ <?= bn_num(date('d/m/Y')) ?>। নতুন জুতা পোস্ট করতে নিচের বাটনে চাপুন।</p></div><a class="btn gold" href="<?= e(aurl('product')) ?>">+ নতুন প্রোডাক্ট পোস্ট</a></div>
     <div class="stats"><?php foreach ($stats as [$l, $v, $to, $c]): ?><a class="stat <?= $c ?>" href="<?= e(aurl($to)) ?>"><small><?= $l ?></small><b><?= $v ?></b></a><?php endforeach; ?></div>
     <section class="box chart-box"><h2>গত ৩০ দিনের বিক্রি <small>মোট <?= money($sumT) ?> • <?= bn_num($sumN) ?>টি অর্ডার (বাতিল বাদে)</small></h2>
       <div class="chart" role="img" aria-label="গত ৩০ দিনের দৈনিক বিক্রি">
@@ -406,12 +406,16 @@ case 'products':
     $w = []; $args = [];
     if ($col) { $w[] = 'collection_id=?'; $args[] = $col; }
     if ($q !== '') { $w[] = '(name LIKE ? OR brand LIKE ?)'; array_push($args, "%$q%", "%$q%"); }
+    $gf = (string)($_GET['g'] ?? '');
+    if (isset(genders()[$gf])) { if ($gf === 'kids') $w[] = "gender='kids'"; else { $w[] = "gender IN (?,'unisex')"; $args[] = $gf; } }
+    if ($gf === 'low') $w[] = 'stock<=3';
     $st = db()->prepare('SELECT * FROM products' . ($w ? ' WHERE ' . implode(' AND ', $w) : '') . ' ORDER BY id DESC');
     $st->execute($args); $rows = $st->fetchAll();
     admin_head('সব প্রোডাক্ট');
     ?>
     <div class="ph"><h1>সব প্রোডাক্ট <small><?= bn_num(count($rows)) ?>টি</small></h1><a class="btn" href="<?= e(aurl('product', $col ? ['col' => $col] : [])) ?>">➕ নতুন প্রোডাক্ট পোস্ট</a></div>
     <div class="tabs"><a href="<?= e(aurl('products')) ?>" class="<?= !$col ? 'on' : '' ?>">সব</a><?php foreach ($cols as $c): ?><a href="<?= e(aurl('products', ['col' => $c['id']])) ?>" class="<?= $col == $c['id'] ? 'on' : '' ?>"><?= e($c['name']) ?></a><?php endforeach; ?></div>
+    <div class="tabs sub"><?php foreach (['' => 'সবার জন্য', 'men' => '👨 ছেলেদের', 'women' => '👩 মেয়েদের', 'kids' => '🧒 বাচ্চাদের', 'low' => '⚠️ স্টক কম'] as $gk => $gl): ?><a href="<?= e(aurl('products', array_filter(['col' => $col ?: '', 'g' => $gk]))) ?>" class="<?= $gf === $gk ? 'on' : '' ?>"><?= $gl ?></a><?php endforeach; ?></div>
     <form class="searchbar"><input type="hidden" name="a" value="products"><?php if ($col): ?><input type="hidden" name="col" value="<?= $col ?>"><?php endif; ?><input name="q" value="<?= e($q) ?>" placeholder="নাম দিয়ে খুঁজুন"><button class="btn sm">খুঁজুন</button></form>
     <div class="plist">
     <?php foreach ($rows as $p): ?>
@@ -427,6 +431,8 @@ case 'products':
         </div>
         <div class="pact">
           <a class="btn xs ghost" href="<?= e(aurl('product', ['id' => $p['id']])) ?>">✏️ এডিট</a>
+          <?php if (trim((string)$p['fb_post']) !== ''): ?><button type="button" class="btn xs ghost" data-copy="<?= e($p['fb_post']) ?>" title="ফেসবুক পেজে পোস্ট করার লেখা কপি হবে">📋 FB পোস্ট কপি</button><?php endif; ?>
+          <a class="btn xs ghost" href="<?= e(url('p/' . $p['slug'])) ?>" target="_blank" rel="noopener">🔗 সাইটে দেখুন</a>
           <?php foreach (['active' => $p['active'] ? '🙈 লুকান' : '👁 দেখান', 'featured' => $p['featured'] ? '☆ জনপ্রিয় থেকে সরান' : '★ জনপ্রিয়তে দিন', 'dup' => '📄 কপি'] as $op => $l): ?>
             <form method="post" action="<?= e(aurl('product_quick')) ?>"><?= csrf_field() ?><input type="hidden" name="id" value="<?= $p['id'] ?>"><input type="hidden" name="op" value="<?= $op ?>"><input type="hidden" name="col" value="<?= $col ?: '' ?>"><button class="btn xs ghost"><?= $l ?></button></form>
           <?php endforeach; ?>
@@ -467,7 +473,7 @@ case 'product':
             <label>কালেকশন *<select name="collection_id" id="f-col"><option value="0">কালেকশন বাছুন</option><?php foreach ($cols as $c): ?><option value="<?= $c['id'] ?>"<?= $p['collection_id'] == $c['id'] ? ' selected' : '' ?>><?= e($c['name']) ?></option><?php endforeach; ?></select></label>
             <label>ব্র্যান্ড<input name="brand" id="f-brand" value="<?= e($p['brand']) ?>" placeholder="ঐচ্ছিক"></label>
           </div>
-          <label>কার জন্য<select name="gender"><?php foreach (['men' => 'ছেলেদের', 'women' => 'মেয়েদের', 'kids' => 'বাচ্চাদের', 'unisex' => 'ছেলে-মেয়ে দুজনের'] as $gk => $gl): ?><option value="<?= $gk ?>"<?= ($p['gender'] ?? 'men') === $gk ? ' selected' : '' ?>><?= $gl ?></option><?php endforeach; ?></select></label>
+          <label>কার জন্য<select name="gender" id="f-gender"><?php foreach (['men' => 'ছেলেদের', 'women' => 'মেয়েদের', 'kids' => 'বাচ্চাদের', 'unisex' => 'ছেলে-মেয়ে দুজনের'] as $gk => $gl): ?><option value="<?= $gk ?>"<?= ($p['gender'] ?? 'men') === $gk ? ' selected' : '' ?>><?= $gl ?></option><?php endforeach; ?></select></label>
           <div class="g3">
             <label>বিক্রয় দাম (৳) *<input type="number" name="price" id="f-price" value="<?= e((string)$p['price']) ?>" min="0" required></label>
             <label>আগের দাম (৳)<input type="number" name="old_price" id="f-old" value="<?= e((string)$p['old_price']) ?>" min="0" placeholder="ছাড় দেখাতে"></label>
@@ -488,6 +494,7 @@ case 'product':
             <label><input type="radio" name="tone_pick" value="offer"><span>🔥 অফার</span></label>
             <label><input type="radio" name="tone_pick" value="festive"><span>🌙 উৎসব/ঈদ</span></label>
             <label><input type="radio" name="tone_pick" value="casual"><span>😊 বন্ধুসুলভ</span></label>
+            <label><input type="radio" name="tone_pick" value="simple"><span>🏡 সহজ ভাষা</span></label>
           </div>
           <label>বাড়তি কিছু বলতে চাইলে (ঐচ্ছিক)<input id="f-notes" placeholder="যেমন: চামড়ার, ঈদ অফার, হালকা ওজন"></label>
           <div class="row-btns"><button type="button" class="btn" id="gen">✨ অটো ক্যাপশন বানান</button><button type="button" class="btn ghost" id="gen2" title="আরেকটা নতুন লেখা">🔄 আরেকটা</button></div>

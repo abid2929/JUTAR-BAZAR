@@ -16,6 +16,15 @@ function caption_kind(string $text): string {
     return 'general';
 }
 
+/** Shoe type for the caption: kids / women first (from the "for whom" field), then the name and collection. */
+function caption_kind_for(array $in): string {
+    $g = (string)($in['gender'] ?? '');
+    $kind = caption_kind(($in['collection_slug'] ?? '') . ' ' . ($in['collection'] ?? '') . ' ' . ($in['name'] ?? ''));
+    if ($g === 'kids') return 'kids';
+    if ($g === 'women' && in_array($kind, ['general', 'formal', 'loafers'], true)) return 'ladies';
+    return $kind;
+}
+
 function caption_template(array $in, ?int $seed = null, string $tone = 'premium'): array {
     $name = trim($in['name'] ?? '') ?: 'নতুন জুতা';
     $col = trim($in['collection'] ?? '');
@@ -24,7 +33,7 @@ function caption_template(array $in, ?int $seed = null, string $tone = 'premium'
     $old = (int)($in['old_price'] ?? 0);
     $sizes = list_csv((string)($in['sizes'] ?? ''));
     $colors = list_csv((string)($in['colors'] ?? ''));
-    $kind = caption_kind(($in['collection_slug'] ?? '') . ' ' . $col . ' ' . $name);
+    $kind = caption_kind_for($in);
     $seed = $seed ?? random_int(0, 999);
     $pick = fn(array $a, int $o = 0) => $a[($seed + $o) % count($a)];
 
@@ -103,12 +112,14 @@ function caption_template(array $in, ?int $seed = null, string $tone = 'premium'
         'offer' => [$off ? "🔥 " . bn_num($off) . "% ছাড়! $title 🔥" : "🔥 সেরা দামে $title 🔥", $off ? 'অফার চলাকালীন অর্ডার করুন, দাম বাড়ার আগেই!' : "$hook!"],
         'festive' => ["🌙 উৎসবের লুক হোক আরও স্পেশাল 🌙", "{$title}: {$hook}।"],
         'casual' => ["👟 নতুন জোড়া এসে গেছে: $title", "$hook, একবার পরলেই বুঝবেন 😍"],
+        'simple' => ["👟 $title", ($price ? 'দাম মাত্র ' . $cur . bn_num(number_format($price)) . '। ' : '') . 'জুতা হাতে পেয়ে টাকা দিন।'],
     ][$tone] ?? ["✨ $title ✨", "{$hook}।"];
-    $close = ['premium' => '✔ প্রতিটি জোড়া পাঠানোর আগে হাতে চেক করা হয়', 'offer' => '⏳ স্টক সীমিত, এখনই অর্ডার করুন', 'festive' => '🎁 প্রিয়জনের জন্য সেরা উপহার', 'casual' => '💬 সাইজ নিয়ে প্রশ্ন? ইনবক্সে জানান'][$tone] ?? '';
+    $close = ['premium' => '✔ প্রতিটি জোড়া পাঠানোর আগে হাতে চেক করা হয়', 'offer' => '⏳ স্টক সীমিত, এখনই অর্ডার করুন', 'festive' => '🎁 প্রিয়জনের জন্য সেরা উপহার', 'casual' => '💬 সাইজ নিয়ে প্রশ্ন? ইনবক্সে জানান', 'simple' => '✅ পছন্দ না হলে বা সাইজ না মিললে সহজে বদলে নিতে পারবেন'][$tone] ?? '';
+    if ($tone === 'simple') $k['feat'] = array_map(fn($f) => preg_replace('/,.*$/u', '', $f), $k['feat']); // shorter lines, easy to read
     $fb = $open[0] . "\n" . $open[1] . "\n\n";
     foreach (array_slice($k['feat'], 0, 3) as $f) $fb .= "👟 $f\n";
     $fb .= "\n" . ($colors ? '🎨 রং: ' . implode(', ', $colors) . "\n" : '') . ($sizes ? '📏 সাইজ: ' . bn_num(implode(', ', $sizes)) . "\n" : '') . ($priceLine ? "$priceLine\n" : '');
-    $fb .= "🚚 সারা বাংলাদেশে ক্যাশ অন ডেলিভারি\n" . ($close ? "$close\n" : '') . "📦 অর্ডার করতে ইনবক্স করুন অথবা ওয়েবসাইটে অর্ডার দিন" . (S('phone') ? "\n📞 " . bn_num(S('phone')) : '') . "\n\n" . $tagStr;
+    $fb .= "🚚 সারা বাংলাদেশে ক্যাশ অন ডেলিভারি\n" . ($close ? "$close\n" : '') . "📦 অর্ডার করতে ইনবক্স করুন অথবা ওয়েবসাইটে অর্ডার দিন" . (S('phone') ? "\n📞 কল / WhatsApp: " . bn_num(S('phone')) : '') . "\n\n" . $tagStr;
 
     $en = caption_template_en($in, $seed);
     $openEn = ['premium' => ["✨ $title ✨", $en['hook'] . '.'], 'offer' => [$off ? "🔥 {$off}% OFF: $title 🔥" : "🔥 Best price: $title 🔥", $off ? 'Grab it while the offer lasts!' : $en['hook'] . '!'],
@@ -132,7 +143,7 @@ function caption_template_en(array $in, int $seed = 0): array {
     $brand = trim($in['brand'] ?? '');
     $sizes = list_csv((string)($in['sizes'] ?? ''));
     $colors = list_csv((string)($in['colors'] ?? ''));
-    $kind = caption_kind(($in['collection_slug'] ?? '') . ' ' . ($in['collection'] ?? '') . ' ' . $name);
+    $kind = caption_kind_for($in);
     $K = [
         'running' => [['Built to keep up with every run', 'Go lighter, go further', 'From morning walks to long runs'], ['Breathable mesh upper keeps feet cool and dry', 'Soft cushioned sole takes the load off knees and ankles', 'Lightweight, so you can wear it all day', 'Grippy outsole for wet roads'], 'Made for running, the gym, walking and everyday wear.'],
         'sneakers' => [['Style and comfort in one pair', 'A sharp look with any outfit', 'Your everyday favourite sneaker'], ['Clean, premium-finish upper', 'Soft insole for all-day comfort', 'Durable rubber sole', 'Goes with jeans, chinos or shorts'], 'Perfect for campus, hangouts, travel and casual office days.'],
@@ -161,7 +172,7 @@ function caption_gemini(array $in, string $imageB64 = '', string $mime = 'image/
     $facts = "Product name: {$in['name']}\nCollection/category: {$in['collection']}\nBrand: {$in['brand']}\nPrice: {$in['price']} BDT" .
         (($in['old_price'] ?? 0) > ($in['price'] ?? 0) ? "\nRegular price (before discount): {$in['old_price']} BDT" : '') .
         "\nSizes: {$in['sizes']}\nColors: {$in['colors']}\nShop name: " . S('shop_name') . "\nExtra notes from shop owner: " . ($in['notes'] ?? '');
-    $toneTxt = ['premium' => 'premium and elegant, like a luxury fashion brand', 'offer' => 'an exciting sale/offer post that pushes people to order now (only mention a discount if a regular price is given)', 'festive' => 'festive (Eid / wedding / celebration season), warm and gift-friendly', 'casual' => 'friendly and casual, like talking to a friend'][$tone] ?? 'premium';
+    $toneTxt = ['premium' => 'premium and elegant, like a luxury fashion brand', 'offer' => 'an exciting sale/offer post that pushes people to order now (only mention a discount if a regular price is given)', 'festive' => 'festive (Eid / wedding / celebration season), warm and gift-friendly', 'casual' => 'friendly and casual, like talking to a friend', 'simple' => 'very simple, everyday Bangla that village customers understand easily: short sentences, no hard English words, price and cash on delivery very clear'][$tone] ?? 'premium';
     $prompt = "You write product copy for a premium Bangladeshi online shoe shop. Tone: $toneTxt. "
         . "Use ONLY the facts given (and what is clearly visible in the photo if one is attached: shape, colour, material look, sole, style). Never invent things like 'genuine leather', warranties, reviews or discounts that are not given.\n\n$facts\n\n"
         . "Return JSON with these keys:\n"

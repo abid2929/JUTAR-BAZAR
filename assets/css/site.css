@@ -952,3 +952,8 @@ main:has(> .about)+.trust{margin-top:0;border-top:0}
 .gtiles h2::after{content:"";display:block;width:44px;height:2px;background:#e5131d;margin:12px auto 0;border-radius:2px}
 .col-tile{border-radius:14px;overflow:hidden}
 .col-banner{border-radius:18px;overflow:hidden}
+/* v2.3 Bangla-first: BD badge in logo, Bangla headings */
+.logo-bd{display:inline-block;font-size:.42em;font-weight:700;letter-spacing:.04em;background:#e5131d;color:#fff;border-radius:4px;padding:2px 4px 1px;margin-left:5px;vertical-align:.95em;line-height:1}
+.ftr .logo-bd{background:#e5131d;color:#fff}
+.lang-bn .sec-head h2,.lang-bn .about h2,.lang-bn .gtiles h2{font-family:'Noto Sans Bengali','Jost',sans-serif;font-weight:600;letter-spacing:0}
+@media(max-width:420px){.hdr .logo-txt b{letter-spacing:.11em!important}.hdr .logo{margin-right:10px}.logo-bd{margin-left:3px}}

@@ -1,4 +1,4 @@
-# জুতার বাজার · JUTAR BAZAR
+# জুতার বাজার বিডি · JUTAR BAZAR BD
 
 **Premium online shoe shop for Bangladesh.** PHP 8 + SQLite: upload, extract, done. No database setup.
 
@@ -7,7 +7,8 @@
 
 ## What's inside
 
-**Storefront (English by default, one tap to বাংলা)**
+**Storefront (opens in বাংলা, one tap to English)**
+- Real shop info: JUTAR BAZAR BD, call/WhatsApp 01624-244920, Facebook page, Dhaka address (opposite Jamuna Future Park). All editable in Settings.
 - Offer banner slider at the top. Every collection page opens on its own banner.
 - **Men / Women / Kids** sections, plus 5 collections: Running, Sneakers, Loafers, Formal, Sandals.
 - Product pages with a size guide, an "only X left" badge, related products and recently viewed.
@@ -19,7 +20,8 @@
 - Dashboard with a sales chart, orders, invoices and CSV export.
 - Products with multi-photo upload. Each product has a "for whom" field (men, women, kids or both).
 - Collections, 9 offer banners, contact and delivery charges, logo and colours, SEO and tracking (Facebook Pixel, GA4), password and backup.
-- **Auto caption:** 4 tones, English + Bangla product text, Facebook post, Instagram caption and Google title. Free with a Google Gemini key, or uses built-in templates.
+- One-click **FB post copy** and **view on site** for every product; filters for men / women / kids / low stock.
+- **Auto caption:** 5 tones (premium, offer, festive, friendly, simple village-friendly Bangla), knows kids and ladies shoes, English + Bangla product text, Facebook post, Instagram caption and Google title. Free with a Google Gemini key, or uses built-in templates.
 
 ## Install on cPanel (about 5 minutes)
 

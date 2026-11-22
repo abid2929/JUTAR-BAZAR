@@ -44,7 +44,7 @@ function caption(mode){
   if(!val('#f-name').trim()){alert('আগে প্রোডাক্টের নাম লিখুন।');$('#f-name').focus();return}
   busy=true;var ai=$('.ai-box');ai.classList.add('busy');gen.disabled=gen2.disabled=true;var old=gen.textContent;gen.textContent='✨ লেখা তৈরি হচ্ছে...';
   var fd=new FormData();
-  fd.append('name',val('#f-name'));fd.append('collection_id',val('#f-col'));fd.append('brand',val('#f-brand'));fd.append('price',val('#f-price'));fd.append('old_price',val('#f-old'));fd.append('colors',val('#f-colors'));fd.append('notes',val('#f-notes'));fd.append('mode',mode||'ai');var tn=document.querySelector('#tone input:checked');fd.append('tone',tn?tn.value:'premium');
+  fd.append('name',val('#f-name'));fd.append('collection_id',val('#f-col'));fd.append('brand',val('#f-brand'));fd.append('price',val('#f-price'));fd.append('old_price',val('#f-old'));fd.append('colors',val('#f-colors'));fd.append('notes',val('#f-notes'));fd.append('gender',val('#f-gender'));fd.append('mode',mode||'ai');var tn=document.querySelector('#tone input:checked');fd.append('tone',tn?tn.value:'premium');
   fd.append('sizes',[].map.call(document.querySelectorAll('#sizes input:checked'),function(i){return i.value}).join(','));
   var first=document.querySelector('#imgs input[name="images[]"]');if(first)fd.append('image',first.value);
   (window.JB_DEMO_CAP?new Promise(function(ok){setTimeout(function(){ok(window.JB_DEMO_CAP(fd))},700)}):post('caption',fd)).then(function(r){
@@ -86,3 +86,7 @@ var pf=$('#pform');
 if(pf){var dirty=false;pf.addEventListener('input',function(){dirty=true});pf.addEventListener('submit',function(){dirty=false});
   window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue=''}})}
 })();
+/* v2.3: copy the Facebook post text of a product */
+document.addEventListener('click',function(e){var b=e.target.closest('[data-copy]');if(!b)return;var t=b.getAttribute('data-copy');var done=function(){var o=b.textContent;b.textContent='✅ কপি হয়েছে';setTimeout(function(){b.textContent=o},1600)};
+if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){fallback()})}else fallback();
+function fallback(){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');done()}catch(x){}a.remove()}});

@@ -230,3 +230,21 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--gold)!impor
 .welcome .w-k{color:#ffd1d3}
 .welcome .btn.gold{background:#fff;border-color:#fff;color:#b5121b}
 .bar i{background:linear-gradient(180deg,#ff6b72,#b5121b)}
+/* v2.3 admin polish: red brand, wide order rows, tidy product cards */
+.brand-en{font-family:'Jost','Noto Sans Bengali',sans-serif!important;letter-spacing:.06em!important;font-size:19px!important}
+.brand-en::first-line{color:#fff}
+.tabs.sub{margin-top:-4px}.tabs.sub a{font-size:13.5px;padding:6px 12px;font-weight:500}
+@media (min-width:700px){
+  .orow{grid-template-columns:130px minmax(0,1fr) 120px 110px!important;gap:4px 18px;padding:14px 18px}
+  .orow>span:nth-of-type(1){grid-column:2!important;grid-row:1}
+  .orow>span:nth-of-type(2){grid-column:3!important;grid-row:1;text-align:right}
+  .orow .st{grid-column:4!important;grid-row:1;justify-self:end}
+  .orow>b{grid-column:1;grid-row:1}
+  .pcard{grid-template-columns:96px minmax(0,1fr) auto!important;align-items:start;padding:14px}
+  .pimg img{width:96px;height:96px}
+  .pinfo .inline{display:inline-flex;margin-right:14px}
+  .pact{flex-direction:row!important;flex-wrap:wrap;justify-content:flex-end;align-items:center!important;max-width:360px;gap:6px}
+  .pact form{display:contents}
+}
+@media (max-width:699px){.brand-en{font-size:15px!important;white-space:nowrap;letter-spacing:.03em!important}.brand small{font-size:10px}.brand img{width:28px;height:28px}.top .btn,.topbar .btn,header .btn{white-space:nowrap;padding:7px 11px;font-size:13px}}
+@media (max-width:699px){.view-site{white-space:nowrap;padding:7px 11px!important;font-size:13px!important;flex:none}}

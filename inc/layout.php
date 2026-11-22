@@ -32,7 +32,9 @@ function icon(string $n, int $s = 22): string {
 function logo_html(): string {
     if (S('logo')) return '<img src="' . e(img_url(S('logo'))) . '" alt="' . e(S('shop_name')) . '" class="logo-img">';
     $nm = S('shop_name_en') ?: S('shop_name'); $w = preg_split('/\s+/', trim($nm), 2);
-    return '<span class="logo-txt"><b><i>' . e($w[0]) . '</i>' . (isset($w[1]) ? ' ' . e($w[1]) : '') . '</b><small>Footwear</small></span>';
+    $rest = $w[1] ?? ''; $bd = '';
+    if (preg_match('/^(.*?)\s*\bBD$/i', $rest, $m)) { $rest = $m[1]; $bd = '<sup class="logo-bd">BD</sup>'; }
+    return '<span class="logo-txt"><b><i>' . e($w[0]) . '</i>' . ($rest !== '' ? ' ' . e($rest) : '') . $bd . '</b><small>Footwear</small></span>';
 }
 
 function page_head(string $title = '', string $desc = '', string $ogImg = ''): void {
@@ -40,7 +42,7 @@ function page_head(string $title = '', string $desc = '', string $ogImg = ''): v
     $brand = is_bn() ? $s['shop_name'] : $s['shop_name_en'];
     $full = $title ? "$title | $brand" : $brand . ' | ' . t('Shoes Online in Bangladesh', 'অনলাইনে জুতা কিনুন');
     $desc = $desc ?: SL('meta_desc');
-    if (mb_strlen($desc) < 70 && $title !== '') $desc = rtrim($desc, ' .।') . ($desc !== '' ? '. ' : '') . t($title . ' at JUTAR BAZAR. Cash on delivery and home delivery all over Bangladesh.', $title . ' — জুতার বাজার। ক্যাশ অন ডেলিভারি, সারা দেশে হোম ডেলিভারি।');
+    if (mb_strlen($desc) < 70 && $title !== '') $desc = rtrim($desc, ' .।') . ($desc !== '' ? '. ' : '') . t($title . ' at ' . $s['shop_name_en'] . '. Cash on delivery and home delivery all over Bangladesh.', $title . ' — ' . $s['shop_name'] . '। ক্যাশ অন ডেলিভারি, সারা দেশে হোম ডেলিভারি।');
     $cols = collections();
     $acc = preg_match('/^#[0-9a-f]{6}$/i', $s['accent']) ? $s['accent'] : '#8c6a3f';
     ?><!doctype html>
