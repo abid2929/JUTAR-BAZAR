@@ -175,6 +175,7 @@ function shop(string $slug = '', string $gender = ''): void {
     if ($q !== '') { $where[] = '(name LIKE ? OR brand LIKE ? OR tags LIKE ? OR short LIKE ? OR colors LIKE ?)'; for ($i = 0; $i < 5; $i++) $args[] = "%$q%"; }
     if ($size !== '' && ctype_digit($size)) { $where[] = "(',' || REPLACE(sizes,' ','') || ',') LIKE ?"; $args[] = "%,$size,%"; }
     $order = ['new' => 'featured DESC, sort, id DESC', 'low' => 'price ASC', 'high' => 'price DESC', 'off' => '(old_price-price) DESC'][$sort] ?? 'id DESC';
+    if ($gn && $gender !== 'kids' && $sort === 'new') $order = "(gender='unisex'), " . $order; // v2.3.3: real men's / women's shoes first, unisex after
     $st = db()->prepare('SELECT * FROM products WHERE ' . implode(' AND ', $where) . " ORDER BY $order");
     $st->execute($args);
     $items = $st->fetchAll();
