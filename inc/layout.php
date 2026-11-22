@@ -206,8 +206,19 @@ function offer_slides(): array {
     }
     return $o;
 }
-function offer_slider(string $first = ''): string {
-    $sl = offer_slides(); if (!$sl) return '';
+// v2.4: banner for the Men / Women / Kids pages, same look as the offer slides
+function gender_slide(string $g): ?array {
+    $cfg = ['men' => ["MEN'S", 'navy', 'g-men'], 'women' => ["WOMEN'S", 'maroon', 'g-women'], 'kids' => ["KIDS'", 'green', 'g-kids']];
+    if (!isset($cfg[$g])) return null;
+    $st = db()->prepare("SELECT MAX(CASE WHEN old_price>price AND price>0 THEN ROUND(100-price*100.0/old_price) ELSE 0 END) FROM products WHERE active=1 AND " . ($g === 'kids' ? "gender='kids'" : "gender IN (?,'unisex')"));
+    $st->execute($g === 'kids' ? [] : [$g]); $mx = (int)$st->fetchColumn();
+    return ['l1' => $cfg[$g][0], 'l2' => 'SHOES', 'top' => $mx > 0 ? 'UP TO' : 'NEW', 'big' => $mx > 0 ? $mx . '%' : 'IN', 'end' => $mx > 0 ? 'OFF' : 'SHOP',
+        'theme' => $cfg[$g][1], 'img' => url('assets/img/demo/offer/' . $cfg[$g][2] . '.webp'), 'link' => url($g)];
+}
+function offer_slider(string $first = '', string $gender = ''): string {
+    $sl = offer_slides();
+    if ($gender !== '' && ($gs = gender_slide($gender))) array_unshift($sl, $gs);
+    if (!$sl) return '';
     if ($first !== '') { $want = url('c/' . $first); usort($sl, fn($a, $b) => ($b['link'] === $want) <=> ($a['link'] === $want)); }
     $h = '<section class="ofs" aria-label="Offers" data-ofs><div class="ofs-track">';
     foreach ($sl as $i => $o) {
