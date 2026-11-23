@@ -22,6 +22,7 @@ switch ($page) {
     case 'login': case 'register': case 'account': case 'logout': header('Location: ' . url('track')); exit; // customer login turned off (owner's request)
     case 'api': api($parts[1] ?? ''); break;
     case 'sitemap.xml': sitemap(); break;
+    case 'og.jpg': og_jpg(); break;
     case 'robots.txt': header('Content-Type: text/plain'); echo "User-agent: *\nDisallow: /admin/\nDisallow: /cart\nDisallow: /checkout\nDisallow: /account\nSitemap: " . full_url('sitemap.xml') . "\n"; break;
     default: not_found();
 }
@@ -55,7 +56,7 @@ function home(): void {
     if (!$featured) $featured = db()->query('SELECT * FROM products WHERE active=1 ORDER BY id DESC LIMIT 8')->fetchAll();
     $heroImg = $s['hero_image'] ? img_url($s['hero_image']) : url('assets/img/demo/hero-full.webp');
     $spot = $featured[0] ?? null;
-    page_head('', '', full_url(ltrim(parse_url($heroImg, PHP_URL_PATH) ?: '', '/')));
+    page_head('', '', $s['hero_image'] ? full_url(ltrim(parse_url($heroImg, PHP_URL_PATH) ?: '', '/')) : '');
     ?>
 <h1 class="sr-only"><?= e(is_bn() ? $s['shop_name'] : $s['shop_name_en']) ?> · <?= e(SL('hero_title')) ?></h1>
 <?= offer_slider() ?>
@@ -270,7 +271,7 @@ function product(string $slug): void {
     $rel = db()->prepare('SELECT * FROM products WHERE active=1 AND collection_id=? AND id<>? ORDER BY featured DESC, RANDOM() LIMIT 4');
     $rel->execute([$p['collection_id'], $p['id']]);
     $related = $rel->fetchAll();
-    page_head($p['name'] . ($p['cname'] ? ' | ' . $p['cname'] : ''), p_short($p), full_url(ltrim(parse_url(p_first_image($p), PHP_URL_PATH) ?: '', '/')));
+    page_head($p['name'] . ($p['cname'] ? ' | ' . $p['cname'] : ''), p_short($p), og_url(p_first_image($p)));
     $pdata = ['id' => (int)$p['id'], 'name' => $p['name'], 'price' => (int)$p['price'], 'img' => p_first_image($p), 'slug' => $p['slug'], 'stock' => (int)$p['stock']];
     ?>
 <section class="pd wrap">
@@ -637,4 +638,36 @@ function account_page(): void {
 </section>
 <?php
     page_foot();
+}
+
+
+/* v2.4: Facebook / WhatsApp do not always show .webp pictures, so share pictures are served as JPG */
+function og_url(string $img): string {
+    $rel = ltrim(parse_url($img, PHP_URL_PATH) ?: '', '/');
+    $base = ltrim(parse_url(full_url(''), PHP_URL_PATH) ?: '', '/');
+    if ($base !== '' && str_starts_with($rel, $base)) $rel = substr($rel, strlen($base));
+    if (!preg_match('~\.webp$~i', $rel) || !function_exists('imagecreatefromwebp')) return full_url($rel);
+    return full_url('og.jpg') . '?i=' . rawurlencode($rel);
+}
+function og_jpg(): void {
+    $rel = (string)($_GET['i'] ?? '');
+    $root = realpath(__DIR__);
+    $file = realpath(__DIR__ . '/' . $rel);
+    if (!$file || !str_starts_with($file, $root . '/') || !preg_match('~^(assets/img|uploads)/[\w./-]+\.webp$~i', $rel) || !function_exists('imagecreatefromwebp')) { http_response_code(404); exit; }
+    $dir = __DIR__ . '/uploads/og';
+    $out = $dir . '/' . md5($rel . filemtime($file)) . '.jpg';
+    if (!is_file($out)) {
+        if (!is_dir($dir)) @mkdir($dir, 0755, true);
+        $im = @imagecreatefromwebp($file);
+        if (!$im) { http_response_code(404); exit; }
+        $w = imagesx($im); $h = imagesy($im);
+        $bg = imagecreatetruecolor($w, $h);
+        imagefill($bg, 0, 0, imagecolorallocate($bg, 255, 255, 255));
+        imagecopy($bg, $im, 0, 0, 0, 0, $w, $h);
+        imagejpeg($bg, $out, 85);
+    }
+    header('Content-Type: image/jpeg');
+    header('Cache-Control: public, max-age=2592000');
+    readfile($out);
+    exit;
 }

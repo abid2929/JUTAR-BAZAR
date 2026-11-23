@@ -43,6 +43,7 @@ function page_head(string $title = '', string $desc = '', string $ogImg = ''): v
     $full = $title ? "$title | $brand" : $brand . ' | ' . t('Shoes Online in Bangladesh', 'অনলাইনে জুতা কিনুন');
     $desc = $desc ?: SL('meta_desc');
     if (mb_strlen($desc) < 70 && $title !== '') $desc = rtrim($desc, ' .।') . ($desc !== '' ? '. ' : '') . t($title . ' at ' . $s['shop_name_en'] . '. Cash on delivery and home delivery all over Bangladesh.', $title . ' — ' . $s['shop_name'] . '। ক্যাশ অন ডেলিভারি, সারা দেশে হোম ডেলিভারি।');
+    if ($ogImg === '') $ogImg = full_url('assets/img/share.jpg'); // v2.4: 1200x630 Facebook share picture
     $cols = collections();
     $acc = preg_match('/^#[0-9a-f]{6}$/i', $s['accent']) ? $s['accent'] : '#8c6a3f';
     ?><!doctype html>
@@ -226,7 +227,7 @@ function offer_slider(string $first = '', string $gender = ''): string {
             . '<span class="of-l"><span class="of-rays"></span><b class="of-t"><span>' . e($o['l1']) . '</span>' . ($o['l2'] !== '' ? '<span>' . e($o['l2']) . '</span>' : '') . '</b>'
             . '<span class="of-brand">' . e(S('shop_name_en') ?: 'JUTAR BAZAR') . '</span>' . (stripos($o['l1'] . $o['l2'], 'cash') === false ? '<span class="of-cod">CASH ON<br>DELIVERY<small>ALL OVER BD</small></span>' : '') . '</span>'
             . '<span class="of-r"><span class="of-box"><i class="of-top">' . e($o['top']) . '</i><strong>' . e($o['big']) . '</strong>' . ($o['end'] !== '' ? '<em>' . e($o['end']) . '</em>' : '') . '</span>' . (S('of_note') !== '' ? '<small class="of-note">' . e(S('of_note')) . '</small>' : '') . '</span>'
-            . ($o['img'] ? '<img class="of-img" src="' . e($o['img']) . '"' . srcset_attr($o['img'], '(max-width:700px) 60vw, 560px', 1100) . ' alt="" ' . ($i ? 'decoding="async"' : 'fetchpriority="high"') . '>' : '')
+            . ($o['img'] ? '<img class="of-img" src="' . e($o['img']) . '"' . srcset_attr($o['img'], '(max-width:700px) 60vw, 560px', 1100) . ' alt="" ' . ($i ? 'loading="lazy" decoding="async"' : 'fetchpriority="high"') . '>' : '')
             . '</a>';
     }
     $h .= '</div>';
@@ -259,6 +260,11 @@ function product_card(array $p, string $colName = '', bool $eager = false): stri
 
 // v2.1: small copies (assets/img/demo/<dir>/s/NAME.webp) for phones; returns srcset + sizes, or '' when none exists
 function srcset_attr(string $src, string $sizes, int $big = 1000): string {
+    // v2.4: photos uploaded from the admin panel (uploads/Y/m/NAME) have a 520px copy in uploads/Y/m/s/
+    if (preg_match('~^(.*?)(uploads/\d{4}/\d{2}/)([^/?]+\.(?:webp|jpg))$~', $src, $u)) {
+        if (!is_file(__DIR__ . '/../' . $u[2] . 's/' . $u[3])) return '';
+        return ' srcset="' . e($u[1] . $u[2] . 's/' . $u[3]) . ' 520w, ' . e($src) . ' 1600w" sizes="' . e($sizes) . '"';
+    }
     if (!preg_match('~^(.*assets/img/demo/(?:offer|p|real)/)([^/?]+\.webp)~', $src, $m)) return '';
     $rel = preg_replace('~^.*?(assets/img/demo/)~', '$1', $m[1]);
     if (!is_file(__DIR__ . '/../' . $rel . 's/' . $m[2])) return '';

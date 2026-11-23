@@ -106,6 +106,12 @@ function save_image(string $tmp, int $max = 1600): ?string {
     if (function_exists('imagecreatefromstring')) {
         $src = @imagecreatefromstring((string)file_get_contents($tmp));
         if ($src) {
+            // v2.4: phone photos carry an EXIF rotation; turn the picture the right way up
+            if ($info[2] === IMAGETYPE_JPEG && function_exists('exif_read_data')) {
+                $o = (int)(@exif_read_data($tmp)['Orientation'] ?? 1);
+                $deg = [3 => 180, 6 => -90, 8 => 90][$o] ?? 0;
+                if ($deg) { $r = imagerotate($src, $deg, 0); if ($r) { imagedestroy($src); $src = $r; } }
+            }
             $w = imagesx($src); $h = imagesy($src);
             $s = min(1, $max / max($w, $h));
             $nw = max(1, (int)round($w * $s)); $nh = max(1, (int)round($h * $s));
@@ -114,6 +120,16 @@ function save_image(string $tmp, int $max = 1600): ?string {
             imagecopyresampled($dst, $src, 0, 0, 0, 0, $nw, $nh, $w, $h);
             if (function_exists('imagewebp')) { $rel = "$dir/$name.webp"; imagewebp($dst, JB_ROOT . "/$rel", 82); }
             else { $rel = "$dir/$name.jpg"; imagejpeg($dst, JB_ROOT . "/$rel", 85); }
+            // v2.4: small copy for phones (uploads/Y/m/s/NAME), used by srcset_attr()
+            if ($nw > 560) {
+                $sw = 520; $sh = max(1, (int)round($nh * $sw / $nw));
+                $sm = imagecreatetruecolor($sw, $sh); imagealphablending($sm, false); imagesavealpha($sm, true);
+                imagecopyresampled($sm, $dst, 0, 0, 0, 0, $sw, $sh, $nw, $nh);
+                if (!is_dir(JB_ROOT . "/$dir/s")) @mkdir(JB_ROOT . "/$dir/s", 0755, true);
+                $sp = JB_ROOT . "/$dir/s/" . basename($rel);
+                str_ends_with($rel, '.webp') ? imagewebp($sm, $sp, 80) : imagejpeg($sm, $sp, 82);
+                imagedestroy($sm);
+            }
             imagedestroy($src); imagedestroy($dst);
             return $rel;
         }
