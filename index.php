@@ -85,18 +85,18 @@ function home(): void {
 </section>
 <?php endif; ?>
 
-<?php /* v2.4.6: owner wants one row of 3 big tiles (Running, Sneakers, Fashion) in the Men/Women/Kids tile style */
-$HT = [['running', 'run-4', 'Running', 'রানিং শু', 'r'], ['sneakers', 'snk-3', 'Sneakers', 'স্নিকার্স', 's'], ['loafers', 'lof-3', 'Fashion', 'ফ্যাশন', 'f']]; ?>
-<section class="gtiles" aria-label="<?= t('Shop by style', 'স্টাইল অনুযায়ী') ?>">
+<?php if (S('ht_on') === '1'): /* v2.4.7: 3 big style tiles, editable in Admin > Settings > Home */ ?>
+<section class="gtiles" aria-label="<?= e(t(S('ht_title_en'), S('ht_title'))) ?>">
   <div class="wrap">
-    <h2><?= t('Shop by style', 'কোনটা খুঁজছেন?') ?></h2>
+    <?php if (S('ht_title') !== '' || S('ht_title_en') !== ''): ?><h2><?= e(t(S('ht_title_en') ?: S('ht_title'), S('ht_title') ?: S('ht_title_en'))) ?></h2><?php endif; ?>
     <div class="gt-grid">
-      <?php foreach ($HT as $h): $hi = url('assets/img/demo/offer/' . $h[1] . '.webp'); ?>
-      <a class="gt gt-<?= $h[4] ?>" href="<?= e(url('c/' . $h[0])) ?>"><img src="<?= e($hi) ?>"<?= srcset_attr($hi, '(max-width:700px) 33vw, 30vw', 800) ?> alt="" decoding="async" width="800" height="600"><span><b><?= e(t($h[2], $h[3])) ?></b><i><?= t('Shop now', 'দেখুন') ?></i></span></a>
-      <?php endforeach; ?>
+      <?php for ($i = 1; $i <= 3; $i++): $im = S("ht{$i}_img"); $hi = str_starts_with($im, 'assets/') ? url($im) : img_url($im); $lk = trim(S("ht{$i}_link"), '/ '); ?>
+      <a class="gt gtc-<?= e(S("ht{$i}_color") ?: 'red') ?>" href="<?= e(preg_match('~^https?://~', $lk) ? $lk : url($lk)) ?>"><img src="<?= e($hi) ?>"<?= srcset_attr($hi, '(max-width:700px) 33vw, 30vw', 800) ?> alt="" decoding="async" width="800" height="600"><span><b><?= e(t(S("ht{$i}_en") ?: S("ht{$i}_bn"), S("ht{$i}_bn") ?: S("ht{$i}_en"))) ?></b><i><?= t('Shop now', 'দেখুন') ?></i></span></a>
+      <?php endfor; ?>
     </div>
   </div>
 </section>
+<?php endif; ?>
 
 <?php if (defined('JB_HOME_TILES') && JB_HOME_TILES): /* v2.4.5: owner removed 'Shop for' + 'Our Collections' tiles from the home page */ ?>
 <section class="gtiles" aria-label="<?= t('Shop for', 'কার জন্য') ?>">
@@ -115,7 +115,7 @@ $HT = [['running', 'run-4', 'Running', 'রানিং শু', 'r'], ['sneaker
   <div class="wrap">
     <div class="sec-head"><h2><small><?= t('Shop by collection', 'কালেকশন অনুযায়ী') ?></small><?= t('Our Collections', 'আমাদের কালেকশন') ?></h2><a href="<?= e(url('shop')) ?>" class="more"><?= t('View all', 'সব দেখুন') ?> <?= icon('arrow', 16) ?></a></div>
     <div class="col-row">
-      <?php $CUT = ['sneakers' => 'snk-3', 'running' => 'run-4', 'formal' => 'frm-2', 'loafers' => 'lof-3', 'sandals' => 'snd-2'];
+      <?php $CUT = ['sneakers' => 'snk-3', 'running' => 'run-4', 'formal' => 'frm-2', 'loafers' => 'lof-3', 'sandals' => 'snd-2', 'fashion' => 'lof-3'];
       foreach ($cols as $ci => $c): $cut = (isset($CUT[$c['slug']]) && str_starts_with((string)$c['image'], 'assets/img/demo/')) ? 'assets/img/demo/offer/' . $CUT[$c['slug']] . '.webp' : ''; $cimg = $cut ? url($cut) : img_url($c['image']); ?>
       <a class="col-tile<?= $cut ? ' cut cut-' . e($c['slug']) : '' ?>" href="<?= e(url('c/' . $c['slug'])) ?>">
         <img src="<?= e($cimg) ?>"<?= srcset_attr($cimg, '(max-width:700px) 60vw, 20vw', 800) ?> alt=""<?= $ci === 0 ? ' fetchpriority="high"' : ($ci < 2 ? '' : ' loading="lazy"') ?> width="600" height="800">

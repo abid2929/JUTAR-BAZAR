@@ -985,6 +985,11 @@ main:has(> .about)+.trust{margin-top:0;border-top:0}
 .cut-sandals{background:linear-gradient(160deg,#9fd3ee,#3b86b8)!important}
 .cut-formal span b{color:#2b1c10;text-shadow:none}
 /* v2.4.6: Running / Sneakers / Fashion tiles */
-.gt.gt-r{background:linear-gradient(160deg,#7a5ae0,#38208a)}
-.gt.gt-s{background:linear-gradient(160deg,#17646a,#0b3337)}
-.gt.gt-f{background:linear-gradient(160deg,#ff5a52,#b00d16)}
+.gt.gtc-purple{background:linear-gradient(160deg,#7a5ae0,#38208a)}
+.gt.gtc-teal{background:linear-gradient(160deg,#17646a,#0b3337)}
+.gt.gtc-red{background:linear-gradient(160deg,#ff5a52,#b00d16)}
+.gt.gtc-navy{background:linear-gradient(160deg,#1f2a44,#0d1322)}
+.gt.gtc-pink{background:linear-gradient(160deg,#e7a1a8,#b9475a)}
+.gt.gtc-orange{background:linear-gradient(160deg,#ffcf4a,#f08a1c)}
+.gt.gtc-sand{background:linear-gradient(160deg,#ead9c1,#c39b6b)}
+.gt.gtc-black{background:linear-gradient(160deg,#3a3a3a,#0e0e0e)}

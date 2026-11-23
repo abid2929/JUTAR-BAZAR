@@ -4,12 +4,11 @@ function jb_seed(PDO $pdo): void {
     $cols = [
         ['রানিং শু', 'Running Shoes', 'running', 'Light, cushioned, built for every run', 'assets/img/demo/real/run-1.webp', 'হালকা, নরম কুশন, প্রতিদিনের দৌড়ের জন্য'],
         ['স্নিকার্স', 'Sneakers', 'sneakers', 'Everyday style that goes with anything', 'assets/img/demo/real/snk-1.webp', 'প্রতিদিনের স্টাইল, যেকোনো পোশাকে মানানসই'],
-        ['লোফার', 'Loafers', 'loafers', 'Lace-free comfort, classic look', 'assets/img/demo/real/col-loafers.webp', 'ফিতা ছাড়া আরাম, ক্লাসিক লুক'],
-        ['ফরমাল শু', 'Formal Shoes', 'formal', 'For the office, weddings and big days', 'assets/img/demo/real/col-formal.webp', 'অফিস, বিয়ে আর বিশেষ দিনের জন্য'],
-        ['স্যান্ডেল', 'Sandals', 'sandals', 'Easy comfort, indoors and out', 'assets/img/demo/real/snd-2.webp', 'গরমে আরাম, ঘরে-বাইরে সবখানে'],
+        ['ফ্যাশন', 'Fashion', 'fashion', 'Loafers, formal shoes and sandals', 'assets/img/demo/real/col-loafers.webp', 'লোফার, ফরমাল জুতা আর স্যান্ডেল'],
     ];
     $ci = $pdo->prepare('INSERT INTO collections(name,name_en,slug,tagline,image,sort,tagline_bn) VALUES(?,?,?,?,?,?,?)');
     foreach ($cols as $i => $c) $ci->execute([$c[0], $c[1], $c[2], $c[3], $c[4], $i + 1, $c[5]]);
+    $pdo->exec("INSERT OR REPLACE INTO settings(k,v) VALUES('mig_3cats','1')");
 
     // [collection slug, name, brand, price, old price, image, sizes, colors, featured]
     $P = [
@@ -20,26 +19,26 @@ function jb_seed(PDO $pdo): void {
         ['sneakers', 'Urban Court Classic', 'Kicks', 2450, 2990, 'snk-1', '38,39,40,41,42,43', 'White/Beige', 1],
         ['sneakers', 'Canvas High Top', 'Kicks', 2150, 2600, 'snk-2', '39,40,41,42,43', 'Grey', 0],
         ['sneakers', 'Red Canvas Low', 'Mode', 1690, 0, 'snk-3', '38,39,40,41,42', 'Red', 0],
-        ['loafers', 'Suede Horsebit Loafer', 'Crafted', 3250, 3900, 'lof-1', '39,40,41,42,43', 'Tan', 1],
-        ['loafers', 'Embroidered Slip-On', 'Crafted', 2950, 0, 'lof-2', '39,40,41,42,43', 'Sky Blue', 0],
-        ['loafers', 'Velvet Studded Loafer', 'Heritage', 3450, 4100, 'lof-3', '40,41,42,43', 'Black', 0],
-        ['loafers', 'Classic Bit Loafer', 'Heritage', 3790, 0, 'lof-4', '39,40,41,42,43,44', 'Brown', 0],
-        ['formal', 'Woven Leather Slip-On', 'Heritage', 4250, 4990, 'frm-1', '39,40,41,42,43,44', 'Brown', 1],
-        ['formal', 'Wingtip Oxford', 'Heritage', 4490, 0, 'frm-2', '39,40,41,42,43', 'Burgundy', 0],
-        ['formal', 'Tan Driving Loafer', 'Crafted', 3990, 4600, 'frm-3', '40,41,42,43,44', 'Tan', 0],
-        ['formal', 'Midnight Derby', 'Crafted', 4150, 0, 'frm-4', '39,40,41,42,43', 'Navy', 0],
-        ['sandals', 'Buckle Comfort Slide', 'Breeze', 1290, 1550, 'snd-1', '38,39,40,41,42,43,44', 'Black', 1],
-        ['sandals', 'Leather Thong Sandal', 'Breeze', 1450, 1750, 'snd-2', '39,40,41,42,43', 'Black/Brown', 0],
-        ['sandals', 'Double Strap Sandal', 'Breeze', 1690, 0, 'snd-3', '39,40,41,42,43,44', 'Olive', 0],
-        ['sandals', 'Cork Buckle Sandal', 'Breeze', 1190, 1400, 'snd-4', '38,39,40,41,42,43', 'Brown', 0],
+        ['fashion', 'Suede Horsebit Loafer', 'Crafted', 3250, 3900, 'lof-1', '39,40,41,42,43', 'Tan', 1],
+        ['fashion', 'Embroidered Slip-On', 'Crafted', 2950, 0, 'lof-2', '39,40,41,42,43', 'Sky Blue', 0],
+        ['fashion', 'Velvet Studded Loafer', 'Heritage', 3450, 4100, 'lof-3', '40,41,42,43', 'Black', 0],
+        ['fashion', 'Classic Bit Loafer', 'Heritage', 3790, 0, 'lof-4', '39,40,41,42,43,44', 'Brown', 0],
+        ['fashion', 'Woven Leather Slip-On', 'Heritage', 4250, 4990, 'frm-1', '39,40,41,42,43,44', 'Brown', 1],
+        ['fashion', 'Wingtip Oxford', 'Heritage', 4490, 0, 'frm-2', '39,40,41,42,43', 'Burgundy', 0],
+        ['fashion', 'Tan Driving Loafer', 'Crafted', 3990, 4600, 'frm-3', '40,41,42,43,44', 'Tan', 0],
+        ['fashion', 'Midnight Derby', 'Crafted', 4150, 0, 'frm-4', '39,40,41,42,43', 'Navy', 0],
+        ['fashion', 'Buckle Comfort Slide', 'Breeze', 1290, 1550, 'snd-1', '38,39,40,41,42,43,44', 'Black', 1],
+        ['fashion', 'Leather Thong Sandal', 'Breeze', 1450, 1750, 'snd-2', '39,40,41,42,43', 'Black/Brown', 0],
+        ['fashion', 'Double Strap Sandal', 'Breeze', 1690, 0, 'snd-3', '39,40,41,42,43,44', 'Olive', 0],
+        ['fashion', 'Cork Buckle Sandal', 'Breeze', 1190, 1400, 'snd-4', '38,39,40,41,42,43', 'Brown', 0],
         ['running', 'Air Glide Runner', 'Stride', 3790, 4500, 'run-4', '39,40,41,42,43,44', 'Charcoal/White', 1],
         ['running', 'Pulse Knit Runner', 'Pacer', 3590, 4200, 'run-5', '39,40,41,42,43', 'Black/White', 0],
         ['sneakers', 'Clean White Court', 'Kicks', 2290, 2750, 'snk-5', '38,39,40,41,42,43', 'White', 1],
-        ['loafers', 'Pinstripe Velvet Slipper', 'Heritage', 2650, 0, 'lof-5', '39,40,41,42,43', 'Navy Stripe', 0],
-        ['formal', 'Patina Cap-Toe Oxford', 'Heritage', 5290, 6200, 'frm-5', '40,41,42,43,44', 'Midnight Blue', 1],
-        ['formal', 'Classic Tan Derby', 'Crafted', 3690, 4300, 'frm-6', '39,40,41,42,43,44', 'Tan', 0],
-        ['sandals', 'Crochet Fringe Slide', 'Breeze', 1350, 1600, 'snd-5', '36,37,38,39,40,41', 'Cream', 0],
-        ['sandals', 'Cross-Strap Platform Sandal', 'Breeze', 1890, 2250, 'snd-6', '36,37,38,39,40', 'Maroon', 1],
+        ['fashion', 'Pinstripe Velvet Slipper', 'Heritage', 2650, 0, 'lof-5', '39,40,41,42,43', 'Navy Stripe', 0],
+        ['fashion', 'Patina Cap-Toe Oxford', 'Heritage', 5290, 6200, 'frm-5', '40,41,42,43,44', 'Midnight Blue', 1],
+        ['fashion', 'Classic Tan Derby', 'Crafted', 3690, 4300, 'frm-6', '39,40,41,42,43,44', 'Tan', 0],
+        ['fashion', 'Crochet Fringe Slide', 'Breeze', 1350, 1600, 'snd-5', '36,37,38,39,40,41', 'Cream', 0],
+        ['fashion', 'Cross-Strap Platform Sandal', 'Breeze', 1890, 2250, 'snd-6', '36,37,38,39,40', 'Maroon', 1],
         ['sneakers', 'Little Bloom Baby Sneaker', 'Tiny Steps', 990, 1250, 'kid-1', '19,20,21,22,23', 'Teal', 1],
         ['sneakers', 'Tiny Red Canvas', 'Tiny Steps', 890, 1100, 'kid-2', '19,20,21,22,23,24', 'Red', 0],
     ];

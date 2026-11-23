@@ -224,8 +224,9 @@ if ($isPost) {
             go('orders', [], 'অর্ডার মুছে ফেলা হয়েছে');
         case 'settings_save':
             $allowed = array_keys(jb_defaults());
-            foreach ($allowed as $k) if (isset($_POST[$k]) && !in_array($k, ['logo', 'hero_image', 'promo_image', 'of1_img', 'of2_img', 'of3_img', 'of4_img', 'of5_img', 'of6_img', 'of7_img'], true)) set_setting($k, trim((string)$_POST[$k]));
+            foreach ($allowed as $k) if (isset($_POST[$k]) && !in_array($k, ['logo', 'hero_image', 'promo_image', 'of1_img', 'of2_img', 'of3_img', 'of4_img', 'of5_img', 'of6_img', 'of7_img', 'ht1_img', 'ht2_img', 'ht3_img'], true)) set_setting($k, trim((string)$_POST[$k]));
             for ($i = 1; $i <= 9; $i++) { if ($p = upload_field("of{$i}_img_file")) set_setting("of{$i}_img", $p); elseif (!empty($_POST["of{$i}_img_clear"])) set_setting("of{$i}_img", jb_defaults()["of{$i}_img"]); }
+            for ($i = 1; $i <= 3; $i++) { if ($p = upload_field("ht{$i}_img_file")) set_setting("ht{$i}_img", $p); elseif (!empty($_POST["ht{$i}_img_clear"])) set_setting("ht{$i}_img", jb_defaults()["ht{$i}_img"]); }
             foreach (['logo', 'hero_image', 'promo_image'] as $k) { if ($p = upload_field($k . '_file')) set_setting($k, $p); elseif (!empty($_POST[$k . '_clear'])) set_setting($k, ''); }
             go('settings', ['tab' => $_POST['tab'] ?? ''], 'সেটিংস সেভ হয়েছে ✓');
         case 'cust':
@@ -633,6 +634,19 @@ case 'settings':
         <div class="g2"><?= $fld('hero_sub', 'ব্যানারের বর্ণনা (ইংরেজি)', 'area') ?><?= $fld('hero_sub_bn', 'ব্যানারের বর্ণনা (বাংলা)', 'area') ?></div>
         <div class="lbl">ব্যানারের বড় ছবি <small>(চওড়া, একটু অন্ধকার জুতার ছবি সবচেয়ে সুন্দর দেখায়)</small></div>
         <div class="file-row"><img src="<?= e($s['hero_image'] ? img_url($s['hero_image']) : url('assets/img/demo/hero-full.webp')) ?>" alt=""><input type="file" name="hero_image_file" accept="image/*"><?php if ($s['hero_image']): ?><label class="inline-check"><input type="checkbox" name="hero_image_clear" value="1"> ডেমো ছবিতে ফেরত যান</label><?php endif; ?></div>
+        <h2>স্লাইডারের নিচের ৩টা বড় টাইল</h2>
+        <p class="muted">হোমপেজে অফার স্লাইডারের ঠিক নিচে ৩টা রঙিন টাইল দেখায়। প্রতিটার ছবি, নাম, রং আর কোন পেজে যাবে, সব এখান থেকে বদলানো যায়। ছবি হিসেবে <b>সাদা বা স্বচ্ছ ব্যাকগ্রাউন্ডের জুতার ছবি</b> সবচেয়ে সুন্দর দেখায়।</p>
+        <label class="inline-check"><input type="hidden" name="ht_on" value="0"><input type="checkbox" name="ht_on" value="1"<?= $s['ht_on'] === '1' ? ' checked' : '' ?>> টাইলগুলো দেখাবে</label>
+        <div class="g2"><?= $fld('ht_title_en', 'টাইলের উপরের শিরোনাম (ইংরেজি)') ?><?= $fld('ht_title', 'টাইলের উপরের শিরোনাম (বাংলা)') ?></div>
+        <?php $HC = ['purple' => 'বেগুনি', 'teal' => 'সবুজ', 'red' => 'লাল', 'navy' => 'নীল', 'pink' => 'গোলাপি', 'orange' => 'কমলা', 'sand' => 'বাদামি', 'black' => 'কালো']; $dj = jb_defaults(); for ($i = 1; $i <= 3; $i++): $im = $s["ht{$i}_img"]; ?>
+        <div class="of-adm">
+          <div class="of-adm-h"><b>টাইল <?= bn_num($i) ?></b></div>
+          <div class="g2"><?= $fld("ht{$i}_bn", 'নাম (বাংলা)') ?><?= $fld("ht{$i}_en", 'নাম (ইংরেজি)') ?></div>
+          <div class="g2"><label>রং<select name="ht<?= $i ?>_color"><?php foreach ($HC as $k => $l): ?><option value="<?= $k ?>"<?= $s["ht{$i}_color"] === $k ? ' selected' : '' ?>><?= $l ?></option><?php endforeach; ?></select></label><?= $fld("ht{$i}_link", 'ক্লিক করলে কোথায় যাবে', 'text', 'c/sneakers বা men বা shop') ?></div>
+          <div class="lbl">জুতার ছবি</div>
+          <div class="file-row"><?php if ($im): ?><img src="<?= e(str_starts_with($im, 'assets/') ? url($im) : img_url($im)) ?>" alt=""><?php endif; ?><input type="file" name="ht<?= $i ?>_img_file" accept="image/*"><?php if ($im !== ($dj["ht{$i}_img"] ?? '')): ?><label class="inline-check"><input type="checkbox" name="ht<?= $i ?>_img_clear" value="1"> ডেমো ছবিতে ফেরত যান</label><?php endif; ?></div>
+        </div>
+        <?php endfor; ?>
         <div class="g2"><?= $fld('promo_title', 'অফার ব্যানারের শিরোনাম, ইংরেজি (ফাঁকা রাখলে দেখাবে না)') ?><?= $fld('promo_title_bn', 'অফার ব্যানারের শিরোনাম (বাংলা)') ?></div>
         <div class="g2"><?= $fld('promo_sub', 'অফারের বর্ণনা (ইংরেজি)') ?><?= $fld('promo_sub_bn', 'অফারের বর্ণনা (বাংলা)') ?></div>
         <div class="g2"><?= $fld('promo_btn', 'অফার বাটন (ইংরেজি)') ?><?= $fld('promo_btn_bn', 'অফার বাটন (বাংলা)') ?></div>

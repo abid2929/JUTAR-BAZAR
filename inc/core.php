@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Dhaka');
 mb_internal_encoding('UTF-8');
 
 define('JB_ROOT', dirname(__DIR__));
-define('JB_VERSION', '2.4.6');
+define('JB_VERSION', '2.4.7');
 
 /** Private data folder: ~/jutarbazar-data (outside public_html) if possible, else ./data (blocked by .htaccess). */
 function jb_data_dir(): string {
@@ -72,7 +72,40 @@ function db(): PDO {
     $cc = array_column($pdo->query('PRAGMA table_info(collections)')->fetchAll(), 'name');
     if (!in_array('tagline_bn', $cc, true)) $pdo->exec("ALTER TABLE collections ADD COLUMN tagline_bn TEXT DEFAULT ''");
     if ($new) { require_once __DIR__ . '/seed.php'; jb_seed($pdo); }
+    else jb_three_cats($pdo);
+    jb_fee_75($pdo);
     return $pdo;
+}
+
+/* v2.4.7: owner wants only 3 categories (Running, Sneakers, Fashion).
+   Loafers, Formal and Sandals are merged into one "Fashion" collection, once. */
+function jb_three_cats(PDO $pdo): void {
+    $done = $pdo->query("SELECT v FROM settings WHERE k='mig_3cats'")->fetchColumn();
+    if ($done) return;
+    $old = $pdo->query("SELECT id, slug FROM collections WHERE slug IN ('loafers','formal','sandals')")->fetchAll(PDO::FETCH_KEY_PAIR);
+    if ($old) {
+        $pdo->beginTransaction();
+        $fid = $pdo->query("SELECT id FROM collections WHERE slug='fashion'")->fetchColumn();
+        if (!$fid) {
+            $pdo->prepare('INSERT INTO collections(name,name_en,slug,tagline,tagline_bn,image,sort) VALUES(?,?,?,?,?,?,?)')
+                ->execute(['ফ্যাশন', 'Fashion', 'fashion', 'Loafers, formal shoes and sandals', 'লোফার, ফরমাল জুতা আর স্যান্ডেল', 'assets/img/demo/real/col-loafers.webp', 3]);
+            $fid = (int)$pdo->lastInsertId();
+        }
+        $in = implode(',', array_map('intval', array_keys($old)));
+        $pdo->exec("UPDATE products SET collection_id=" . (int)$fid . " WHERE collection_id IN ($in)");
+        $pdo->exec("DELETE FROM collections WHERE id IN ($in)");
+        $pdo->exec("UPDATE settings SET v='c/fashion' WHERE v IN ('c/loafers','c/formal','c/sandals')");
+        $pdo->commit();
+    }
+    $pdo->prepare('INSERT INTO settings(k,v) VALUES(?,?) ON CONFLICT(k) DO UPDATE SET v=excluded.v')->execute(['mig_3cats', '1']);
+}
+/* v2.4.7: owner's new delivery charge (Nov 23): Dhaka 75, outside 135. Applied once to saved settings too. */
+function jb_fee_75(PDO $pdo): void {
+    if ($pdo->query("SELECT v FROM settings WHERE k='mig_fee75'")->fetchColumn()) return;
+    $up = $pdo->prepare('INSERT INTO settings(k,v) VALUES(?,?) ON CONFLICT(k) DO UPDATE SET v=excluded.v');
+    $up->execute(['delivery_in', '75']); $up->execute(['delivery_out', '135']);
+    $pdo->exec("UPDATE settings SET v='৳75' WHERE k LIKE 'of%_big' AND v='৳70'");
+    $up->execute(['mig_fee75', '1']);
 }
 
 /* ---------- settings ---------- */
@@ -104,8 +137,8 @@ function jb_defaults(): array {
         'instagram' => '',
         'tiktok' => '',
         'youtube' => '',
-        'delivery_in' => '70',
-        'delivery_out' => '130',
+        'delivery_in' => '75',
+        'delivery_out' => '135',
         'delivery_in_label' => 'ঢাকা সিটির ভেতরে',
         'delivery_out_label' => 'ঢাকা সিটির বাইরে',
         'currency' => '৳',
@@ -138,6 +171,12 @@ function jb_defaults(): array {
         'of1_big' => '2026',
         'of1_end' => 'SHOP',
         'of1_theme' => 'red',
+        'ht_on' => '1',
+        'ht_title' => 'কোনটা খুঁজছেন?',
+        'ht_title_en' => 'Shop by style',
+        'ht1_bn' => 'রানিং শু', 'ht1_en' => 'Running', 'ht1_link' => 'c/running', 'ht1_color' => 'purple', 'ht1_img' => 'assets/img/demo/offer/run-4.webp',
+        'ht2_bn' => 'স্নিকার্স', 'ht2_en' => 'Sneakers', 'ht2_link' => 'c/sneakers', 'ht2_color' => 'teal', 'ht2_img' => 'assets/img/demo/offer/snk-3.webp',
+        'ht3_bn' => 'ফ্যাশন', 'ht3_en' => 'Fashion', 'ht3_link' => 'c/fashion', 'ht3_color' => 'red', 'ht3_img' => 'assets/img/demo/offer/lof-3.webp',
         'of1_img' => 'assets/img/demo/offer/snk-3.webp',
         'of1_link' => 'shop',
         'of2_on' => '1',
@@ -153,7 +192,7 @@ function jb_defaults(): array {
         'of3_l1' => 'DHAKA',
         'of3_l2' => 'DELIVERY',
         'of3_top' => 'ONLY',
-        'of3_big' => '৳70',
+        'of3_big' => '৳75',
         'of3_end' => 'FAST',
         'of3_theme' => 'green',
         'of3_img' => 'assets/img/demo/offer/lof-3.webp',
@@ -184,7 +223,7 @@ function jb_defaults(): array {
         'of6_end' => 'OFF!',
         'of6_theme' => 'dark',
         'of6_img' => 'assets/img/demo/offer/frm-2.webp',
-        'of6_link' => 'c/formal',
+        'of6_link' => 'c/fashion',
         'of7_on' => '1',
         'of7_l1' => 'LOAFERS',
         'of7_l2' => 'COLLECTION',
@@ -193,7 +232,7 @@ function jb_defaults(): array {
         'of7_end' => 'OFF!',
         'of7_theme' => 'maroon',
         'of7_img' => 'assets/img/demo/offer/lof-4.webp',
-        'of7_link' => 'c/loafers',
+        'of7_link' => 'c/fashion',
         'of8_on' => '1',
         'of8_l1' => 'RUNNING',
         'of8_l2' => 'SHOES',
@@ -211,7 +250,7 @@ function jb_defaults(): array {
         'of9_end' => 'OFF!',
         'of9_theme' => 'green',
         'of9_img' => 'assets/img/demo/offer/snd-2.webp',
-        'of9_link' => 'c/sandals',
+        'of9_link' => 'c/fashion',
         'of_note' => '',
     ];
 }

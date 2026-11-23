@@ -2,7 +2,7 @@
 <title>সাইট সেটিংস | অ্যাডমিন</title>
 <link rel="icon" type="image/png" href="assets/img/favicon-48.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700;800&amp;family=Cormorant+Garamond:wght@600;700&amp;family=Noto+Serif+Bengali:wght@600;700&amp;display=swap">
-<link rel="stylesheet" href="admin/admin.css?v=2.4.6">
+<link rel="stylesheet" href="admin/admin.css?v=2.4.7">
 </head><body class=""><div style="position:sticky;top:0;z-index:999;background:#141210;color:#fff;text-align:center;padding:8px 12px;font:500 14px/1.5 'Noto Sans Bengali',sans-serif">ডেমো অ্যাডমিন প্যানেল (পাসওয়ার্ড ছাড়া): ঘুরে দেখা যাবে, কিন্তু এখানে কিছু সেভ হবে না। আসল প্যানেল cPanel-এ আপলোডের পর <b>আপনারডোমেইন.com/admin</b>-এ পাবেন, তখন প্রথমবার পাসওয়ার্ড সেট করবেন। <a href="index.html" style="color:#e7cfa6;text-decoration:underline">সাইটে ফিরে যান</a></div>
 <header class="top">
   <button class="menu-btn" onclick="document.body.classList.toggle('nav-open')" aria-label="মেনু">☰</button>
@@ -23,16 +23,16 @@
 <main class="main">
     <div class="ph"><h1>সাইট সেটিংস</h1></div>
     <div class="tabs"><a href="admin-settings.html" class="">হোমপেজের লেখা</a><a href="admin-settings-offers.html" class="">অফার ব্যানার</a><a href="admin-settings-contact.html" class="on">যোগাযোগ ও ডেলিভারি</a><a href="admin-settings-brand.html" class="">লোগো ও রং</a><a href="admin-settings-ai.html" class="">অটো ক্যাপশন (AI)</a><a href="admin-settings-seo.html" class="">SEO ও ট্র্যাকিং</a><a href="admin-settings-pw.html" class="">পাসওয়ার্ড ও ব্যাকআপ</a></div>
-        <form method="post" enctype="multipart/form-data" action="#" class="box form"><input type="hidden" name="csrf" value="e53afb50755d01a6d1d8738d035e94b9"><input type="hidden" name="tab" value="contact">
+        <form method="post" enctype="multipart/form-data" action="#" class="box form"><input type="hidden" name="csrf" value="2b8170079fa66ab6dda77673c69ee15d"><input type="hidden" name="tab" value="contact">
               <div class="g2"><label>ফোন নাম্বার<input type="text" name="phone" value="01624-244920" placeholder=""></label><label>WhatsApp নাম্বার (৮৮ দিয়ে শুরু)<input type="text" name="whatsapp" value="8801624244920" placeholder="8801XXXXXXXXX"></label></div>
         <label>ইমেইল<input type="text" name="email" value="" placeholder=""></label>        <div class="g2"><label>ঠিকানা (ইংরেজি)<input type="text" name="address" value="Opposite Jamuna Future Park, Nandha Bus Stand (Life BD Shop), Dhaka" placeholder=""></label><label>ঠিকানা (বাংলা)<input type="text" name="address_bn" value="যমুনা ফিউচার পার্কের বিপরীতে, নন্দা বাস স্ট্যান্ড (Life BD Shop), ঢাকা" placeholder=""></label></div>
         <div class="g2"><label>Facebook পেজ লিংক<input type="text" name="facebook" value="https://www.facebook.com/share/1A5UHxTjZH/" placeholder=""></label><label>Instagram লিংক<input type="text" name="instagram" value="" placeholder=""></label></div>
         <div class="g2"><label>TikTok লিংক<input type="text" name="tiktok" value="" placeholder=""></label><label>YouTube লিংক<input type="text" name="youtube" value="" placeholder=""></label></div>
         <h2>ডেলিভারি চার্জ</h2>
-        <div class="g2"><label>এলাকা ১ এর নাম<input type="text" name="delivery_in_label" value="ঢাকা সিটির ভেতরে" placeholder=""></label><label>এলাকা ১ চার্জ (৳)<input type="number" name="delivery_in" value="70" placeholder=""></label></div>
-        <div class="g2"><label>এলাকা ২ এর নাম<input type="text" name="delivery_out_label" value="ঢাকা সিটির বাইরে" placeholder=""></label><label>এলাকা ২ চার্জ (৳)<input type="number" name="delivery_out" value="130" placeholder=""></label></div>
+        <div class="g2"><label>এলাকা ১ এর নাম<input type="text" name="delivery_in_label" value="ঢাকা সিটির ভেতরে" placeholder=""></label><label>এলাকা ১ চার্জ (৳)<input type="number" name="delivery_in" value="75" placeholder=""></label></div>
+        <div class="g2"><label>এলাকা ২ এর নাম<input type="text" name="delivery_out_label" value="ঢাকা সিটির বাইরে" placeholder=""></label><label>এলাকা ২ চার্জ (৳)<input type="number" name="delivery_out" value="135" placeholder=""></label></div>
         <label>এত টাকার বেশি অর্ডারে ডেলিভারি ফ্রি (০ = বন্ধ)<input type="number" name="free_over" value="0" placeholder=""></label>        <label>নতুন অর্ডার এলে এই ইমেইলে জানাবে (ঐচ্ছিক)<input type="email" name="notify_email" value="" placeholder=""></label>        <h2>WhatsApp পপ-আপ</h2>
         <div class="g2"><label>পপ-আপের লেখা (ইংরেজি)<textarea name="wa_popup" rows="3" placeholder="">Looking for a pair? Ask us anything about size, price or your order on WhatsApp.</textarea></label><label>পপ-আপের লেখা (বাংলা)<textarea name="wa_popup_bn" rows="3" placeholder="">জুতা খুঁজছেন? সাইজ, দাম বা অর্ডার নিয়ে যেকোনো প্রশ্ন হোয়াটসঅ্যাপে করুন।</textarea></label></div>
         <label>কত সেকেন্ড পর দেখাবে (০ = পপ-আপ বন্ধ)<input type="number" name="wa_popup_sec" value="6" placeholder=""></label>            <button class="btn">💾 সেভ করুন</button>
     </form>
-        </main><script>window.CSRF="e53afb50755d01a6d1d8738d035e94b9";window.AURL="\/admin\/";window.BASE="\/";</script><script src="admin/demo-caption.js?v=1.4.3"></script><script src="admin/admin.js?v=1.4.3"></script><script>document.addEventListener("submit",function(e){e.preventDefault()},true);window.onbeforeunload=null;</script></body></html>
+        </main><script>window.CSRF="2b8170079fa66ab6dda77673c69ee15d";window.AURL="\/admin\/";window.BASE="\/";</script><script src="admin/demo-caption.js?v=1.4.3"></script><script src="admin/admin.js?v=1.4.3"></script><script>document.addEventListener("submit",function(e){e.preventDefault()},true);window.onbeforeunload=null;</script></body></html>
