@@ -73,7 +73,7 @@ function home(): void {
     <p><?= e(SL('hero_sub')) ?></p>
     <div class="hx-btns">
       <a class="btn hx-b1" href="<?= e(url('shop')) ?>"><?= e(SL('hero_btn')) ?> <?= icon('arrow', 18) ?></a>
-      <?php if ($cols): ?><a class="btn hx-b2" href="#collections"><?= t('Collections', 'কালেকশন') ?></a><?php endif; ?>
+      <?php if ($cols && defined('JB_HOME_TILES') && JB_HOME_TILES): ?><a class="btn hx-b2" href="#collections"><?= t('Collections', 'কালেকশন') ?></a><?php endif; ?>
     </div>
     <ul class="hx-perks">
       <li><?= icon('cash', 18) ?><?= t('Cash on delivery', 'ক্যাশ অন ডেলিভারি') ?></li>
@@ -85,6 +85,7 @@ function home(): void {
 </section>
 <?php endif; ?>
 
+<?php if (defined('JB_HOME_TILES') && JB_HOME_TILES): /* v2.4.5: owner removed 'Shop for' + 'Our Collections' tiles from the home page */ ?>
 <section class="gtiles" aria-label="<?= t('Shop for', 'কার জন্য') ?>">
   <div class="wrap">
     <h2><?= t('Shop for', 'কার জন্য কিনবেন') ?></h2>
@@ -112,6 +113,7 @@ function home(): void {
   </div>
 </section>
 <?php endif; ?>
+<?php endif; /* end home tiles */ ?>
 
 <?php if ($featured): ?>
 <section class="sec">
