@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Dhaka');
 mb_internal_encoding('UTF-8');
 
 define('JB_ROOT', dirname(__DIR__));
-define('JB_VERSION', '2.4.8');
+define('JB_VERSION', '2.4.9');
 
 /** Private data folder: ~/jutarbazar-data (outside public_html) if possible, else ./data (blocked by .htaccess). */
 function jb_data_dir(): string {
@@ -174,10 +174,10 @@ function jb_defaults(): array {
         'ht_on' => '1',
         'ht_title' => 'কোনটা খুঁজছেন?',
         'ht_title_en' => 'Shop by style',
-        'ht1_bn' => 'রানিং শু', 'ht1_en' => 'Running', 'ht1_link' => 'c/running', 'ht1_color' => 'purple', 'ht1_img' => 'assets/img/demo/offer/run-5.webp',
-        'ht2_bn' => 'স্নিকার্স', 'ht2_en' => 'Sneakers', 'ht2_link' => 'c/sneakers', 'ht2_color' => 'teal', 'ht2_img' => 'assets/img/demo/offer/snk-1.webp',
+        'ht1_bn' => 'রানিং শু', 'ht1_en' => 'Running', 'ht1_link' => 'c/running', 'ht1_color' => 'purple', 'ht1_img' => 'assets/img/demo/offer/ow-run.webp',
+        'ht2_bn' => 'স্নিকার্স', 'ht2_en' => 'Sneakers', 'ht2_link' => 'c/sneakers', 'ht2_color' => 'teal', 'ht2_img' => 'assets/img/demo/offer/ow-snk.webp',
         'ht3_bn' => 'ফ্যাশন', 'ht3_en' => 'Fashion', 'ht3_link' => 'c/fashion', 'ht3_color' => 'red', 'ht3_img' => 'assets/img/demo/offer/lof-1.webp',
-        'of1_img' => 'assets/img/demo/offer/run-5.webp',
+        'of1_img' => 'assets/img/demo/offer/ow-run.webp',
         'of1_link' => 'c/running',
         'of2_on' => '1',
         'of2_l1' => 'SNEAKERS',
@@ -186,7 +186,7 @@ function jb_defaults(): array {
         'of2_big' => 'auto',
         'of2_end' => 'OFF',
         'of2_theme' => 'teal',
-        'of2_img' => 'assets/img/demo/offer/snk-1.webp',
+        'of2_img' => 'assets/img/demo/offer/ow-snk.webp',
         'of2_link' => 'c/sneakers',
         'of3_on' => '1',
         'of3_l1' => 'FASHION',
