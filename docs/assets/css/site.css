@@ -973,3 +973,14 @@ main:has(> .about)+.trust{margin-top:0;border-top:0}
 /* v2.4.1: Bangla vowel signs (ু ূ ৃ) need room below the line, so no tight line-height or clipping on Bangla text */
 .lang-bn h1,.lang-bn h2,.lang-bn h3,.lang-bn h4,.lang-bn .gtiles b,.lang-bn .lx-bt b,.lang-bn .tile b{line-height:1.4!important}
 .lang-bn .lx-bar h1,.lang-bn .lx-bar h2,.lang-bn .card h3,.lang-bn .hero-tag b,.lang-bn .hx-tag b{line-height:1.5!important;padding-bottom:2px}
+/* v2.4.4: collection tiles in the same style as the Men/Women/Kids tiles: clean shoe photo on a colour card */
+.col-tile.cut{background:#222}
+.col-tile.cut img{object-fit:contain;padding:12% 7% 30%;filter:drop-shadow(0 18px 20px rgba(0,0,0,.3))}
+.col-tile.cut:hover img{transform:scale(1.05) rotate(-3deg)}
+.col-tile.cut span{background:none;padding-bottom:20px}
+.cut-sneakers{background:linear-gradient(160deg,#17646a,#0b3337)!important}
+.cut-running{background:linear-gradient(160deg,#7a5ae0,#38208a)!important}
+.cut-formal{background:linear-gradient(160deg,#ead9c1,#c39b6b)!important}
+.cut-loafers{background:linear-gradient(160deg,#ff5a52,#b00d16)!important}
+.cut-sandals{background:linear-gradient(160deg,#9fd3ee,#3b86b8)!important}
+.cut-formal span b{color:#2b1c10;text-shadow:none}

@@ -101,10 +101,11 @@ function home(): void {
   <div class="wrap">
     <div class="sec-head"><h2><small><?= t('Shop by collection', 'কালেকশন অনুযায়ী') ?></small><?= t('Our Collections', 'আমাদের কালেকশন') ?></h2><a href="<?= e(url('shop')) ?>" class="more"><?= t('View all', 'সব দেখুন') ?> <?= icon('arrow', 16) ?></a></div>
     <div class="col-row">
-      <?php foreach ($cols as $ci => $c): ?>
-      <a class="col-tile" href="<?= e(url('c/' . $c['slug'])) ?>">
-        <img src="<?= e(img_url($c['image'])) ?>"<?= srcset_attr(img_url($c['image']), '(max-width:700px) 60vw, 20vw', 800) ?> alt=""<?= $ci === 0 ? ' fetchpriority="high"' : ($ci < 2 ? '' : ' loading="lazy"') ?> width="600" height="800">
-        <span><b><?= e($c['name_en'] ?: $c['name']) ?></b><i><?= t('Shop now', 'দেখুন') ?> <?= icon('arrow', 14) ?></i></span>
+      <?php $CUT = ['sneakers' => 'snk-3', 'running' => 'run-4', 'formal' => 'frm-2', 'loafers' => 'lof-3', 'sandals' => 'snd-2'];
+      foreach ($cols as $ci => $c): $cut = (isset($CUT[$c['slug']]) && str_starts_with((string)$c['image'], 'assets/img/demo/')) ? 'assets/img/demo/offer/' . $CUT[$c['slug']] . '.webp' : ''; $cimg = $cut ? url($cut) : img_url($c['image']); ?>
+      <a class="col-tile<?= $cut ? ' cut cut-' . e($c['slug']) : '' ?>" href="<?= e(url('c/' . $c['slug'])) ?>">
+        <img src="<?= e($cimg) ?>"<?= srcset_attr($cimg, '(max-width:700px) 60vw, 20vw', 800) ?> alt=""<?= $ci === 0 ? ' fetchpriority="high"' : ($ci < 2 ? '' : ' loading="lazy"') ?> width="600" height="800">
+        <span><b><?= e(t($c['name_en'] ?: $c['name'], $c['name'])) ?></b><i><?= t('Shop now', 'দেখুন') ?> <?= icon('arrow', 14) ?></i></span>
       </a>
       <?php endforeach; ?>
     </div>
