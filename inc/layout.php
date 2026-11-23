@@ -64,7 +64,8 @@ function page_head(string $title = '', string $desc = '', string $ogImg = ''): v
 <meta property="og:description" content="<?= e(mb_substr($desc, 0, 200)) ?>">
 <meta property="og:type" content="website">
 <?php if ($ogImg): ?><meta property="og:image" content="<?= e($ogImg) ?>"><?php endif; ?>
-<link rel="icon" href="<?= e(S('logo') ? img_url(S('logo')) : url('assets/img/favicon.svg')) ?>">
+<?php if (S('logo')): ?><link rel="icon" href="<?= e(img_url(S('logo'))) ?>"><?php else: ?><link rel="icon" type="image/png" sizes="48x48" href="<?= e(url('assets/img/favicon-48.png')) ?>"><link rel="icon" type="image/png" sizes="192x192" href="<?= e(url('assets/img/favicon-192.png')) ?>"><?php endif; ?>
+<link rel="apple-touch-icon" href="<?= e(url('assets/img/apple-touch-icon.png')) ?>">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Jost:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="<?= e(url('assets/css/site.css')) ?>?v=<?= JB_VERSION ?>">

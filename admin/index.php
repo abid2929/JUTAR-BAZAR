@@ -281,7 +281,7 @@ function admin_head(string $title, bool $bare = false): void {
     global $a, $newCount;
     ?><!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
 <title><?= e($title) ?> | অ্যাডমিন</title>
-<link rel="icon" href="<?= e(url('assets/img/favicon.svg')) ?>">
+<link rel="icon" type="image/png" href="<?= e(url('assets/img/favicon-48.png')) ?>">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&family=Noto+Serif+Bengali:wght@600;700&display=swap">
 <link rel="stylesheet" href="<?= e(url('admin/admin.css')) ?>?v=<?= JB_VERSION ?>">
 </head><body class="<?= $bare ? 'bare' : '' ?>">
