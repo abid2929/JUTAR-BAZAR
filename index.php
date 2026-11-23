@@ -85,6 +85,19 @@ function home(): void {
 </section>
 <?php endif; ?>
 
+<?php /* v2.4.6: owner wants one row of 3 big tiles (Running, Sneakers, Fashion) in the Men/Women/Kids tile style */
+$HT = [['running', 'run-4', 'Running', 'রানিং শু', 'r'], ['sneakers', 'snk-3', 'Sneakers', 'স্নিকার্স', 's'], ['loafers', 'lof-3', 'Fashion', 'ফ্যাশন', 'f']]; ?>
+<section class="gtiles" aria-label="<?= t('Shop by style', 'স্টাইল অনুযায়ী') ?>">
+  <div class="wrap">
+    <h2><?= t('Shop by style', 'কোনটা খুঁজছেন?') ?></h2>
+    <div class="gt-grid">
+      <?php foreach ($HT as $h): $hi = url('assets/img/demo/offer/' . $h[1] . '.webp'); ?>
+      <a class="gt gt-<?= $h[4] ?>" href="<?= e(url('c/' . $h[0])) ?>"><img src="<?= e($hi) ?>"<?= srcset_attr($hi, '(max-width:700px) 33vw, 30vw', 800) ?> alt="" decoding="async" width="800" height="600"><span><b><?= e(t($h[2], $h[3])) ?></b><i><?= t('Shop now', 'দেখুন') ?></i></span></a>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+
 <?php if (defined('JB_HOME_TILES') && JB_HOME_TILES): /* v2.4.5: owner removed 'Shop for' + 'Our Collections' tiles from the home page */ ?>
 <section class="gtiles" aria-label="<?= t('Shop for', 'কার জন্য') ?>">
   <div class="wrap">

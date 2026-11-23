@@ -984,3 +984,7 @@ main:has(> .about)+.trust{margin-top:0;border-top:0}
 .cut-loafers{background:linear-gradient(160deg,#ff5a52,#b00d16)!important}
 .cut-sandals{background:linear-gradient(160deg,#9fd3ee,#3b86b8)!important}
 .cut-formal span b{color:#2b1c10;text-shadow:none}
+/* v2.4.6: Running / Sneakers / Fashion tiles */
+.gt.gt-r{background:linear-gradient(160deg,#7a5ae0,#38208a)}
+.gt.gt-s{background:linear-gradient(160deg,#17646a,#0b3337)}
+.gt.gt-f{background:linear-gradient(160deg,#ff5a52,#b00d16)}
