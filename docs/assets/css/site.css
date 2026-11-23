@@ -970,3 +970,6 @@ main:has(> .about)+.trust{margin-top:0;border-top:0}
 .ofs-dots button::before{content:none}
 .ofs-dots button::after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:5px;background:rgba(0,0,0,.25);transition:width .3s,margin .3s,background .3s}
 .ofs-dots button.on::after{width:24px;margin-left:-12px;background:#141414}
+/* v2.4.1: Bangla vowel signs (ু ূ ৃ) need room below the line, so no tight line-height or clipping on Bangla text */
+.lang-bn h1,.lang-bn h2,.lang-bn h3,.lang-bn h4,.lang-bn .gtiles b,.lang-bn .lx-bt b,.lang-bn .tile b{line-height:1.4!important}
+.lang-bn .lx-bar h1,.lang-bn .lx-bar h2,.lang-bn .card h3,.lang-bn .hero-tag b,.lang-bn .hx-tag b{line-height:1.5!important;padding-bottom:2px}
