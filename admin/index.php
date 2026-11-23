@@ -656,7 +656,7 @@ case 'settings':
         <div class="g2"><?= $fld('footer_note', 'ফুটারের লেখা (ইংরেজি)') ?><?= $fld('footer_note_bn', 'ফুটারের লেখা (বাংলা)') ?></div>
       <?php elseif ($tab === 'offers'): ?>
         <p class="muted">কালেকশন আর "সব জুতা" পেজের উপরে এই ব্যানারগুলো নিজে নিজে স্লাইড হয় (প্রতি ৪.৫ সেকেন্ডে)। ৭টা পর্যন্ত দিতে পারবেন। বড় লেখাগুলো ইংরেজিতে সবচেয়ে সুন্দর দেখায়। "বক্সের বড় লেখা"য় <b>auto</b> লিখলে ওই কালেকশনের জুতার আসল সবচেয়ে বেশি ছাড় (%) নিজে থেকে বসে যাবে। শুধু সত্যি তথ্য দিন।</p>
-        <?php $TH = ['red' => 'লাল', 'dark' => 'কালো-সোনালি', 'maroon' => 'মেরুন', 'navy' => 'নীল', 'green' => 'সবুজ']; $dj = jb_defaults(); for ($i = 1; $i <= 9; $i++): $im = $s["of{$i}_img"]; ?>
+        <?php $TH = ['red' => 'লাল', 'purple' => 'বেগুনি', 'teal' => 'গাঢ় সবুজ', 'dark' => 'কালো', 'maroon' => 'মেরুন', 'navy' => 'নীল', 'green' => 'সবুজ', 'pink' => 'গোলাপি', 'orange' => 'কমলা']; $dj = jb_defaults(); for ($i = 1; $i <= 9; $i++): $im = $s["of{$i}_img"]; ?>
         <div class="of-adm">
           <div class="of-adm-h"><b>ব্যানার <?= bn_num($i) ?></b><label class="inline-check"><input type="hidden" name="of<?= $i ?>_on" value="0"><input type="checkbox" name="of<?= $i ?>_on" value="1"<?= $s["of{$i}_on"] === '1' ? ' checked' : '' ?>> দেখাবে</label></div>
           <div class="g2"><?= $fld("of{$i}_l1", 'বড় লেখা, প্রথম লাইন', 'text', 'WEEKEND') ?><?= $fld("of{$i}_l2", 'বড় লেখা, দ্বিতীয় লাইন', 'text', 'BONANZA') ?></div>

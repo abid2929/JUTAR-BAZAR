@@ -223,6 +223,23 @@ function offer_slider(string $first = '', string $gender = ''): string {
     if (!$sl) return '';
     if ($first !== '') { $want = url('c/' . $first); usort($sl, fn($a, $b) => ($b['link'] === $want) <=> ($a['link'] === $want)); }
     $h = '<section class="ofs" aria-label="Offers" data-ofs><div class="ofs-track">';
+    if (S('of_style') !== 'classic') { // v2.4.8: clean colour-card banners, same look as the home tiles
+        foreach ($sl as $i => $o) {
+            $big = trim($o['top'] . ' ' . $o['big'] . ' ' . $o['end']);
+            $h .= '<a class="of ofc t-' . e($o['theme']) . ($i ? '' : ' on') . '" href="' . e($o['link']) . '"' . ($i ? ' aria-hidden="true" tabindex="-1"' : '') . '>'
+                . '<span class="ofc-txt"><small class="ofc-k">' . e(S('shop_name_en') ?: 'JUTAR BAZAR BD') . '</small>'
+                . '<b class="ofc-h"><span>' . e($o['l1']) . '</span>' . ($o['l2'] !== '' ? '<span>' . e($o['l2']) . '</span>' : '') . '</b>'
+                . ($big !== '' ? '<span class="ofc-pill"><i>' . e($o['top']) . '</i> <strong>' . e($o['big']) . '</strong> <i>' . e($o['end']) . '</i></span>' : '')
+                . '<span class="ofc-btn">' . t('Shop now', 'এখনই দেখুন') . ' &rarr;</span></span>'
+                . '<span class="ofc-ring"></span>'
+                . ($o['img'] ? '<img class="ofc-img" src="' . e($o['img']) . '"' . srcset_attr($o['img'], '(max-width:700px) 60vw, 560px', 1100) . ' alt="" ' . ($i ? 'loading="lazy" decoding="async"' : 'fetchpriority="high"') . '>' : '')
+                . '<span class="ofc-cod">' . t('Cash on delivery', 'ক্যাশ অন ডেলিভারি') . '</span>'
+                . '</a>';
+        }
+        $h .= '</div>';
+        if (count($sl) > 1) { $h .= '<div class="ofs-dots">'; foreach ($sl as $i => $o) $h .= '<button type="button" aria-label="Offer ' . ($i + 1) . '"' . ($i ? '' : ' class="on"') . '></button>'; $h .= '</div>'; }
+        return $h . '</section>';
+    }
     foreach ($sl as $i => $o) {
         $h .= '<a class="of of-' . e($o['theme']) . ($i ? '' : ' on') . '" href="' . e($o['link']) . '"' . ($i ? ' aria-hidden="true" tabindex="-1"' : '') . '>'
             . '<span class="of-l"><span class="of-rays"></span><b class="of-t"><span>' . e($o['l1']) . '</span>' . ($o['l2'] !== '' ? '<span>' . e($o['l2']) . '</span>' : '') . '</b>'
