@@ -103,7 +103,7 @@ function home(): void {
     <div class="col-row">
       <?php foreach ($cols as $ci => $c): ?>
       <a class="col-tile" href="<?= e(url('c/' . $c['slug'])) ?>">
-        <img src="<?= e(img_url($c['image'])) ?>"<?= srcset_attr(img_url($c['image']), '(max-width:700px) 60vw, 20vw', 800) ?> alt=""<?= $ci < 2 ? '' : ' loading="lazy"' ?> width="600" height="800">
+        <img src="<?= e(img_url($c['image'])) ?>"<?= srcset_attr(img_url($c['image']), '(max-width:700px) 60vw, 20vw', 800) ?> alt=""<?= $ci === 0 ? ' fetchpriority="high"' : ($ci < 2 ? '' : ' loading="lazy"') ?> width="600" height="800">
         <span><b><?= e($c['name_en'] ?: $c['name']) ?></b><i><?= t('Shop now', 'দেখুন') ?> <?= icon('arrow', 14) ?></i></span>
       </a>
       <?php endforeach; ?>
