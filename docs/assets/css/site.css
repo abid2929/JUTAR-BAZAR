@@ -1111,3 +1111,17 @@ html:not(.lang-bn) .sec-head h2 small{letter-spacing:.14em;text-transform:upperc
   .gtiles .gt:nth-child(n+4){animation-delay:.7s}
   .gtiles .sec-head,.gtiles h2{animation:jbFade .8s ease .25s both}
 }
+/* v2.6.3: fill the empty middle of the PC banner (ghost word, bigger shoe, perk chips) */
+.ofc-ghost,.ofc-perks{display:none}
+@media (min-width:701px){
+  .ofc-ghost{display:block;position:absolute;left:50%;top:50%;transform:translate(-46%,-50%);font-family:'Anton','Jost',sans-serif;font-size:15cqw;line-height:1;text-transform:uppercase;white-space:nowrap;color:transparent;-webkit-text-stroke:.12cqw rgba(255,255,255,.22);z-index:0;pointer-events:none;user-select:none}
+  .ofc-perks{display:flex;flex-direction:column;gap:.8cqw;position:absolute;left:39%;top:50%;transform:translateY(-50%);z-index:2}
+  .ofc-perks i{font-style:normal;font-size:1.05cqw;font-weight:600;color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:99px;padding:.55cqw 1.3cqw .55cqw 2.6cqw;position:relative;white-space:nowrap}
+  .ofc-perks i::before{content:"";position:absolute;left:1.05cqw;top:50%;width:.7cqw;height:.7cqw;margin-top:-.35cqw;border-radius:50%;background:#fff;box-shadow:0 0 0 .25cqw rgba(255,255,255,.3)}
+  .ofc-img{right:9%;height:84%;max-width:38%}
+  .ofc-ring{right:10%;width:40cqw;height:40cqw;margin-top:-20cqw}
+  .ofc-cod{display:none}
+  .ofc .ofc-perks{opacity:0;translate:0 10px;transition:opacity .6s .35s,translate .8s cubic-bezier(.2,.8,.2,1) .35s}
+  .of.on .ofc-perks{opacity:1;translate:0 0}
+}
+@media(max-width:899px){.hdr .logo{margin-left:12px}}@media(max-width:370px){.hdr .logo{margin-left:6px}}

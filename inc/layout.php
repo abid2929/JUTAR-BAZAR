@@ -240,6 +240,8 @@ function offer_slider(string $first = '', string $gender = ''): string {
                 . '<b class="ofc-h"><span>' . e($o['l1']) . '</span>' . ($o['l2'] !== '' ? '<span>' . e($o['l2']) . '</span>' : '') . '</b>'
                 . ($big !== '' ? '<span class="ofc-pill"><i>' . e($o['top']) . '</i> <strong>' . e($o['big']) . '</strong> <i>' . e($o['end']) . '</i></span>' : '')
                 . '<span class="ofc-btn">' . t('Shop now', 'এখনই দেখুন') . ' &rarr;</span></span>'
+                . '<span class="ofc-ghost" aria-hidden="true">' . e($o['l1']) . '</span>'
+                . '<span class="ofc-perks" aria-hidden="true"><i>' . t('Cash on delivery', 'ক্যাশ অন ডেলিভারি') . '</i><i>' . t('Delivery all over Bangladesh', 'সারা দেশে ডেলিভারি') . '</i><i>' . t('Easy size exchange', 'সহজ সাইজ এক্সচেঞ্জ') . '</i></span>'
                 . '<span class="ofc-ring"></span>'
                 . ($o['img'] ? '<img class="ofc-img" src="' . e($o['img']) . '"' . srcset_attr($o['img'], '(max-width:700px) 60vw, 560px', 1100) . ' alt="" ' . ($i ? 'loading="lazy" decoding="async"' : 'fetchpriority="high"') . '>' : '')
                 . '<span class="ofc-cod">' . t('Cash on delivery', 'ক্যাশ অন ডেলিভারি') . '</span>'
