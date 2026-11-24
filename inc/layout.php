@@ -41,6 +41,8 @@ function page_head(string $title = '', string $desc = '', string $ogImg = ''): v
     $s = settings();
     $brand = is_bn() ? $s['shop_name'] : $s['shop_name_en'];
     $full = $title ? "$title | $brand" : $brand . ' | ' . t('Shoes Online in Bangladesh', 'অনলাইনে জুতা কিনুন');
+    if ($title === '' && trim($s['seo_title'] ?? '') !== '') $full = trim($s['seo_title']); // v2.5: Admin > Settings > SEO
+    if (function_exists('jb_count_visit') && http_response_code() === 200) jb_count_visit($title ?: 'home');
     $desc = $desc ?: SL('meta_desc');
     if (mb_strlen($desc) < 70 && $title !== '') $desc = rtrim($desc, ' .।') . ($desc !== '' ? '. ' : '') . t($title . ' at ' . $s['shop_name_en'] . '. Cash on delivery and home delivery all over Bangladesh.', $title . ' — ' . $s['shop_name'] . '। ক্যাশ অন ডেলিভারি, সারা দেশে হোম ডেলিভারি।');
     if ($ogImg === '') $ogImg = full_url('assets/img/share.jpg'); // v2.4: 1200x630 Facebook share picture
@@ -54,6 +56,9 @@ function page_head(string $title = '', string $desc = '', string $ogImg = ''): v
 <title><?= e($full) ?></title>
 <meta name="description" content="<?= e(mb_substr($desc, 0, 160)) ?>">
 <meta name="theme-color" content="#16130f">
+<?php if (trim($s['meta_keys'] ?? '') !== ''): ?><meta name="keywords" content="<?= e($s['meta_keys']) ?>">
+<?php endif; ?><?php $gsv = trim(preg_replace('~^.*content=["\']?([^"\'\s>]+).*$~s', '$1', (string)($s['gsv'] ?? ''))); if ($gsv !== ''): ?><meta name="google-site-verification" content="<?= e($gsv) ?>">
+<?php endif; ?>
 <?php $canon = (function_exists('full_url') ? full_url() : '/'); $canon = rtrim($canon, '/') . '/' . ltrim(substr((string)parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), strlen(base_url())), '/'); ?>
 <link rel="canonical" href="<?= e($canon) ?>">
 <meta property="og:url" content="<?= e($canon) ?>">
@@ -76,6 +81,9 @@ function page_head(string $title = '', string $desc = '', string $ogImg = ''): v
 </head>
 <body>
 <a class="skip" href="#main"><?= t('Skip to content', 'মূল অংশে যান') ?></a>
+<?php if (S('announce_on') === '1' && trim(SL('announce')) !== ''): $msgs = array_values(array_filter(array_map('trim', preg_split('/\s*•\s*/u', SL('announce'))))); /* v2.5: top bar, Admin > Homepage CMS */ ?>
+<div class="announce" role="note"><div class="announce-track"><?php for ($r = 0; $r < 2; $r++) foreach ($msgs as $m) echo '<span' . ($r ? ' aria-hidden="true"' : '') . '>' . e($m) . '</span>'; ?></div></div>
+<?php endif; ?>
 <header class="hdr" id="hdr">
   <div class="wrap hdr-in">
     <button class="icon-btn only-m" data-open="#drawer" aria-label="Menu"><?= icon('menu') ?></button>
@@ -262,15 +270,16 @@ function product_card(array $p, string $colName = '', bool $eager = false): stri
     $h .= '<a class="card-img" href="' . e(url('p/' . $p['slug'])) . '">';
     $h .= '<img src="' . e($img) . '"' . srcset_attr($img, '(max-width:700px) 50vw, (max-width:1200px) 33vw, 25vw') . ' alt="' . e($p['name']) . '" ' . ($eager ? 'fetchpriority="high"' : 'loading="lazy"') . ' decoding="async" width="600" height="600">';
     if ($alt) $h .= '<img class="alt" src="' . e($alt) . '"' . srcset_attr($alt, '(max-width:700px) 50vw, (max-width:1200px) 33vw, 25vw') . ' alt="" loading="lazy" width="600" height="600">';
-    $h .= '<span class="badges">' . ($d ? '<i class="b-off">-' . bn_num($d) . '%</i>' : '') . ($p['is_new'] ? '<i class="b-new">' . t('New', 'নতুন') . '</i>' : '') . ((int)$p['stock'] <= 0 ? '<i class="b-out">' . t('Sold out', 'স্টক শেষ') . '</i>' : '') . '</span>';
+    $h .= '<span class="badges">' . ($d ? '<i class="b-off">-' . bn_num($d) . '%</i>' : '') . ($p['is_new'] ? '<i class="b-new">' . t('New', 'নতুন') . '</i>' : '') . (!empty($p['flash']) ? '<i class="b-flash">' . t('Flash sale', 'ফ্ল্যাশ সেল') . '</i>' : '') . ((int)$p['stock'] <= 0 ? '<i class="b-out">' . t('Sold out', 'স্টক শেষ') . '</i>' : '') . '</span>';
     $h .= '</a><div class="card-body">';
     if ($colName) $h .= '<span class="card-col">' . e($colName) . '</span>';
     $st = (int)$p['stock'];
     $h .= '<h3><a href="' . e(url('p/' . $p['slug'])) . '">' . e($p['name']) . '</a></h3>';
+    if (trim((string)($p['label'] ?? '')) !== '') $h .= '<span class="card-lbl">' . e($p['label']) . '</span>';
     $h .= '<div class="price"><b>' . money($p['price']) . '</b>' . ($d ? '<s>' . money($p['old_price']) . '</s>' : '') . '</div>';
     $dots = color_dots($p['colors'] ?? '');
     if ($dots) $h .= '<span class="dots">' . $dots . '</span>';
-    if (!empty($p['featured']) && $st > 3) $h .= '<span class="hot">' . icon('flame', 15) . t('Best seller', 'বেস্ট সেলার') . '</span>';
+    if ((!empty($p['best']) || !empty($p['featured'])) && $st > 3) $h .= '<span class="hot">' . icon('flame', 15) . t('Best seller', 'বেস্ট সেলার') . '</span>';
     if ($st > 0 && $st <= 3) $h .= '<span class="low">' . t('Only ' . $st . ' left', 'মাত্র ' . bn_num($st) . 'টি বাকি') . '</span>';
     $h .= '</div></article>';
     return $h;

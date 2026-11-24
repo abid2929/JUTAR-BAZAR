@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Dhaka');
 mb_internal_encoding('UTF-8');
 
 define('JB_ROOT', dirname(__DIR__));
-define('JB_VERSION', '2.4.10');
+define('JB_VERSION', '2.5.0');
 
 /** Private data folder: ~/jutarbazar-data (outside public_html) if possible, else ./data (blocked by .htaccess). */
 function jb_data_dir(): string {
@@ -74,6 +74,7 @@ function db(): PDO {
     if ($new) { require_once __DIR__ . '/seed.php'; jb_seed($pdo); }
     else jb_three_cats($pdo);
     jb_fee_75($pdo);
+    jb_v25($pdo);
     return $pdo;
 }
 
@@ -106,6 +107,64 @@ function jb_fee_75(PDO $pdo): void {
     $up->execute(['delivery_in', '75']); $up->execute(['delivery_out', '135']);
     $pdo->exec("UPDATE settings SET v='৳75' WHERE k LIKE 'of%_big' AND v='৳70'");
     $up->execute(['mig_fee75', '1']);
+}
+
+/* v2.5: new admin panel (same as the owner's other shops). Extra columns, visitor counter. Safe to run on every start. */
+function jb_v25(PDO $pdo): void {
+    $pc = array_column($pdo->query('PRAGMA table_info(products)')->fetchAll(), 'name');
+    foreach (['label' => "TEXT DEFAULT ''", 'flash' => 'INTEGER DEFAULT 0', 'best' => 'INTEGER DEFAULT 0', 'gal_colors' => "TEXT DEFAULT '[]'"] as $c => $t)
+        if (!in_array($c, $pc, true)) $pdo->exec("ALTER TABLE products ADD COLUMN $c $t");
+    $oc = array_column($pdo->query('PRAGMA table_info(orders)')->fetchAll(), 'name');
+    foreach (['pay' => "TEXT DEFAULT 'cod'", 'trx' => "TEXT DEFAULT ''", 'paid' => 'INTEGER DEFAULT 0', 'src' => "TEXT DEFAULT 'website'", 'courier' => "TEXT DEFAULT ''", 'hist' => "TEXT DEFAULT '[]'"] as $c => $t)
+        if (!in_array($c, $oc, true)) $pdo->exec("ALTER TABLE orders ADD COLUMN $c $t");
+    $pdo->exec('CREATE TABLE IF NOT EXISTS visits (d TEXT, h TEXT, PRIMARY KEY(d, h)) WITHOUT ROWID; CREATE TABLE IF NOT EXISTS live (h TEXT PRIMARY KEY, t INTEGER, page TEXT DEFAULT \'\')');
+}
+/** JSON value kept in the settings table (admin users, keys, reviews, catalog collections). */
+function jget(string $k, $def = []) { $v = db()->prepare('SELECT v FROM settings WHERE k=?'); $v->execute([$k]); $j = json_decode((string)$v->fetchColumn(), true); return $j ?? $def; }
+function jset(string $k, $v): void { db()->prepare('INSERT INTO settings(k,v) VALUES(?,?) ON CONFLICT(k) DO UPDATE SET v=excluded.v')->execute([$k, json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]); }
+/** Count one visitor per day (hashed IP + browser, nothing personal stored) and who is browsing now. */
+function jb_count_visit(string $page = ''): void {
+    $ua = (string)($_SERVER['HTTP_USER_AGENT'] ?? '');
+    if ($ua === '' || preg_match('~bot|crawl|spider|slurp|lighthouse|headless|facebookexternalhit|preview~i', $ua)) return;
+    try {
+        $h = substr(hash('sha256', client_ip() . '|' . $ua . '|' . date('Y-m-d')), 0, 20); $now = time();
+        $pdo = db();
+        $pdo->prepare('INSERT OR IGNORE INTO visits(d,h) VALUES(?,?)')->execute([date('Y-m-d'), $h]);
+        $pdo->prepare('INSERT OR REPLACE INTO live(h,t,page) VALUES(?,?,?)')->execute([$h, $now, mb_substr($page, 0, 80)]);
+        if (mt_rand(1, 50) === 1) { $pdo->prepare('DELETE FROM live WHERE t<?')->execute([$now - 900]); $pdo->prepare('DELETE FROM visits WHERE d<?')->execute([date('Y-m-d', $now - 120 * 86400)]); }
+    } catch (Throwable $e) { }
+}
+function jb_http(string $url, array $opt = []): array {
+    if (!function_exists('curl_init')) return ['code' => 0, 'body' => '', 'err' => 'curl missing'];
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => $opt['timeout'] ?? 15, CURLOPT_FOLLOWLOCATION => true, CURLOPT_HTTPHEADER => $opt['headers'] ?? []]);
+    if (isset($opt['post'])) { curl_setopt($ch, CURLOPT_POST, true); curl_setopt($ch, CURLOPT_POSTFIELDS, $opt['post']); }
+    $body = curl_exec($ch); $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE); $err = curl_error($ch); curl_close($ch);
+    return ['code' => $code, 'body' => (string)$body, 'err' => $err];
+}
+/** SMS through any Bangladesh SMS gateway: the URL uses {number} and {message}. */
+function jb_sms(string $number, string $msg): array {
+    $tpl = (string)(jget('secrets')['sms_url'] ?? '');
+    if ($tpl === '' || !preg_match('~^https?://~', $tpl)) return ['ok' => false, 'msg' => 'SMS gateway not set'];
+    $num = norm_phone($number); if (strlen($num) === 11) $num = '88' . $num;
+    $r = jb_http(str_replace(['{number}', '{message}'], [rawurlencode($num), rawurlencode($msg)], $tpl), ['timeout' => 12]);
+    return ['ok' => $r['code'] >= 200 && $r['code'] < 300, 'msg' => substr($r['body'] ?: $r['err'], 0, 200)];
+}
+/** Meta Conversions API Purchase (server side). Shares the order code as event_id with the browser pixel. */
+function jb_capi(string $event, array $o): void {
+    $pid = preg_replace('/\D/', '', S('pixel_id')); $sec = jget('secrets'); $tok = (string)($sec['capi_token'] ?? '');
+    if ($pid === '' || $tok === '') return;
+    $ph = norm_phone((string)($o['phone'] ?? '')); if (strlen($ph) === 11) $ph = '88' . $ph;
+    $ev = ['event_name' => $event, 'event_time' => time(), 'action_source' => 'website', 'event_id' => (string)($o['code'] ?? uniqid()),
+        'event_source_url' => isset($_SERVER['HTTP_HOST']) ? 'https://' . $_SERVER['HTTP_HOST'] . base_url() : '',
+        'user_data' => array_filter(['ph' => [hash('sha256', $ph)], 'client_ip_address' => client_ip(), 'client_user_agent' => (string)($_SERVER['HTTP_USER_AGENT'] ?? ''),
+            'fbp' => $_COOKIE['_fbp'] ?? null, 'fbc' => $_COOKIE['_fbc'] ?? null, 'country' => [hash('sha256', 'bd')]]),
+        'custom_data' => ['currency' => 'BDT', 'value' => (float)($o['total'] ?? 0), 'content_type' => 'product',
+            'contents' => array_map(fn($i) => ['id' => (string)$i['id'], 'quantity' => (int)$i['qty'], 'item_price' => (float)$i['price']], $o['items'] ?? [])]];
+    $payload = ['data' => [$ev], 'access_token' => $tok];
+    if (!empty($sec['capi_test'])) $payload['test_event_code'] = (string)$sec['capi_test'];
+    $r = jb_http("https://graph.facebook.com/v19.0/$pid/events", ['post' => json_encode($payload), 'headers' => ['Content-Type: application/json'], 'timeout' => 8]);
+    $log = jget('capi_log'); $log[] = ['t' => time(), 'e' => $event, 'code' => $r['code']]; jset('capi_log', array_slice($log, -200));
 }
 
 /* ---------- settings ---------- */
@@ -252,6 +311,10 @@ function jb_defaults(): array {
         'of9_img' => 'assets/img/demo/offer/snd-2.webp',
         'of9_link' => 'c/fashion',
         'of_note' => '',
+        // v2.5 new admin
+        'announce_on' => '0', 'announce_bn' => '', 'delivery_note_bn' => '', 'pay_note_bn' => '',
+        'pay_cod' => '1', 'pay_bkash' => '', 'pay_nagad' => '', 'pay_note' => '',
+        'seo_title' => '', 'meta_keys' => '', 'gsv' => '', 'hours' => '', 'map' => '', 'delivery_note' => '',
     ];
 }
 function settings(): array {

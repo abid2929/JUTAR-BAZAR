@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://abid2929.github.io/JUTAR-BAZAR/"><b>👀 Live demo</b></a> &nbsp;·&nbsp;
-  <a href="https://abid2929.github.io/JUTAR-BAZAR/admin.html"><b>🔐 Admin demo</b></a>
+  <a href="https://abid2929.github.io/JUTAR-BAZAR/admin/"><b>🔐 Admin demo</b></a>
 </p>
 
 <p align="center">
@@ -27,24 +27,25 @@
 **Storefront (opens in বাংলা, one tap to English)**
 - Real shop info: JUTAR BAZAR BD, call/WhatsApp 01624-244920, Facebook page, Dhaka address (opposite Jamuna Future Park). All editable in Settings.
 - Offer banner slider at the top. Every collection page opens on its own banner.
-- **Men / Women / Kids** sections, plus 5 collections: Running, Sneakers, Loafers, Formal, Sandals.
+- **Men / Women / Kids** sections, plus 3 categories: Running, Sneakers, Fashion.
 - Product pages with a size guide, an "only X left" badge, related products and recently viewed.
-- Cart, cash-on-delivery checkout, order tracking, WhatsApp ordering and a WhatsApp popup.
+- Cart, checkout with cash on delivery (plus bKash / Nagad with TrxID when turned on), order tracking, WhatsApp ordering and a WhatsApp popup.
 - Phone layout that feels like an app: one-line header and a bottom tab bar (Home, Shop, Cart, WhatsApp).
 - Fast: phone-sized photo copies, lazy loading and clean HTML. SEO-ready: meta tags, canonical, JSON-LD and sitemap.xml.
 
-**Admin panel (Bangla, red theme)**
-- Dashboard with a sales chart, orders, invoices and CSV export.
-- Products with multi-photo upload. Each product has a "for whom" field (men, women, kids or both).
-- Collections, 9 offer banners, contact and delivery charges, logo and colours, SEO and tracking (Facebook Pixel, GA4), password and backup.
-- One-click **FB post copy** and **view on site** for every product; filters for men / women / kids / low stock.
-- **Auto caption:** 5 tones (premium, offer, festive, friendly, simple village-friendly Bangla), knows kids and ladies shoes, English + Bangla product text, Facebook post, Instagram caption and Google title. Free with a Google Gemini key, or uses built-in templates.
+**Admin panel (v2.5: the same admin as the owner's other shops, Bangla with an English button)**
+- Dashboard: today's numbers, quick buttons, visitors today and browsing now, 7-day sales chart, order status donut. App-style bottom bar on phone.
+- Products with sizes (tap 36-46 or kids sizes), colours, a photo gallery with a colour tag per photo, stock, flash sale / new / best seller badges.
+- **AI copywriter:** English + Bangla description, Facebook post and tags in 5 tones. Free with a Google Gemini key, or built-in templates.
+- Categories, catalog collections (own row on the homepage), inventory, customer reviews, hero banner slides, homepage CMS.
+- Orders with status history, invoice print, manual orders, CSV export, Steadfast courier hub, customers, reports.
+- Admins & roles (super admin, manager, staff), 8 settings tabs (store, delivery, payment, courier, SMS, Meta Pixel + Conversions API, Google SEO, password & backup).
 
 ## 🚀 Install on cPanel (about 5 minutes)
 
 1. Download this repo as a ZIP (**Code → Download ZIP**).
 2. Upload everything **except the `docs/` folder** to `public_html`, then extract it.
-3. Open `yourdomain.com/admin` and set your admin password on the first visit.
+3. Open `yourdomain.com/admin` and create your admin username and password on the first visit. (Upgrading from v2.4? Log in with username **admin** and your old password.)
 4. Change the shop name, phone, WhatsApp number and delivery charges in **Settings**.
 
 Needs PHP 8.0 or newer with SQLite (standard on cPanel hosting).

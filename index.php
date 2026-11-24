@@ -137,6 +137,19 @@ function home(): void {
 </section>
 <?php endif; ?>
 
+<?php /* v2.5: hand-picked catalog collections from Admin > Catalog Collections */
+foreach (jget('catalog_cols') as $cc): if (empty($cc['on']) || empty($cc['ids'])) continue;
+  $ids = array_slice(array_map(fn($i) => (int)substr((string)$i, 1), $cc['ids']), 0, 12); $in = implode(',', array_filter($ids)); if ($in === '') continue;
+  $cp = db()->query("SELECT * FROM products WHERE active=1 AND id IN ($in)")->fetchAll(); if (!$cp) continue;
+  usort($cp, fn($a, $b) => array_search((int)$a['id'], $ids) <=> array_search((int)$b['id'], $ids)); ?>
+<section class="sec" id="cc-<?= e($cc['slug']) ?>">
+  <div class="wrap">
+    <div class="sec-head"><h2><small><?= t('Collection', 'কালেকশন') ?></small><?= e(t(($cc['en'] ?? '') ?: $cc['name'], $cc['name'])) ?></h2></div>
+    <div class="grid rail cap4"><?php foreach ($cp as $p) echo product_card($p, $colName[$p['collection_id']] ?? ''); ?></div>
+  </div>
+</section>
+<?php endforeach; ?>
+
 <?php $n = 0; foreach ($cols as $c): if (!$c['show_home'] || empty($byCol[$c['id']])) continue; $n++; ?>
 <section class="sec col-sec<?= $n % 2 === 0 ? ' flip' : '' ?>" id="col-<?= e($c['slug']) ?>">
   <div class="wrap col-in">
@@ -161,6 +174,20 @@ function home(): void {
   <div class="sec-head"><h2><small><?= t('Your history', 'আপনার দেখা') ?></small><?= t('Recently viewed', 'সম্প্রতি দেখেছেন') ?></h2></div>
   <div class="grid rail" id="recent-grid"></div>
 </div></section>
+
+<?php $revs = array_values(array_filter(jget('reviews'), fn($r) => !empty($r['on']))); if ($revs): /* v2.5: customer reviews from Admin > Customer Reviews */ ?>
+<section class="sec revs">
+  <div class="wrap">
+    <div class="sec-head"><h2><small><?= t('Happy customers', 'খুশি কাস্টমার') ?></small><?= t('What our customers say', 'কাস্টমাররা যা বলছেন') ?></h2></div>
+    <div class="rev-row">
+      <?php foreach (array_slice($revs, 0, 12) as $r): ?>
+      <figure class="rev"><div class="rev-st" aria-label="<?= (int)$r['stars'] ?>/5"><?= str_repeat('★', (int)$r['stars']) ?><span><?= str_repeat('★', 5 - (int)$r['stars']) ?></span></div>
+        <blockquote><?= e($r['text']) ?></blockquote><figcaption><b><?= e($r['name']) ?></b><?php if (!empty($r['pet'])): ?><small><?= e($r['pet']) ?></small><?php endif; ?></figcaption></figure>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+<?php endif; ?>
 
 <section class="about">
   <div class="wrap about-in">
@@ -293,7 +320,8 @@ function product(string $slug): void {
 <section class="pd wrap">
   <nav class="crumbs" aria-label="Breadcrumb"><a href="<?= e(url()) ?>"><?= t('Home', 'হোম') ?></a> / <?php if ($p['cname']): ?><a href="<?= e(url('c/' . $p['cslug'])) ?>"><?= e($p['cname']) ?></a> / <?php endif; ?><span><?= e($p['name']) ?></span></nav>
   <div class="pd-in">
-    <div class="gallery<?= count($imgs) > 1 ? ' multi' : '' ?>">
+    <?php $gcol = json_decode((string)($p['gal_colors'] ?? '[]'), true) ?: []; ?>
+    <div class="gallery<?= count($imgs) > 1 ? ' multi' : '' ?>"<?= array_filter($gcol) ? ' data-gcol="' . e(json_encode(array_values($gcol), JSON_UNESCAPED_UNICODE)) . '"' : '' ?>>
       <div class="g-main" id="gmain">
         <?php foreach ($imgs as $i => $im): ?><img src="<?= e(img_url($im)) ?>" alt="<?= e($p['name']) ?> <?= t('photo', 'ছবি') ?> <?= $i + 1 ?>" width="800" height="800" <?= $i ? 'loading="lazy"' : 'fetchpriority="high"' ?>><?php endforeach; ?>
       </div>
@@ -386,7 +414,17 @@ function checkout_page(): void {
       </fieldset>
       <label><?= t('Note (optional)', 'নোট (ঐচ্ছিক)') ?><textarea name="note" maxlength="300" rows="2" placeholder="<?= t('e.g. foot length, delivery time', 'যেমন: পায়ের মাপ, ডেলিভারির সময়') ?>"></textarea></label>
       <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <?php if (trim(SL('delivery_note')) !== ''): ?><p class="muted co-dnote"><?= icon('truck', 16) ?> <?= e(SL('delivery_note')) ?></p><?php endif; ?>
+      <?php $pm = array_filter(['bkash' => trim(S('pay_bkash')), 'nagad' => trim(S('pay_nagad'))]); $cod = S('pay_cod') !== '0' || !$pm; ?>
+      <?php if (!$pm): ?>
       <div class="pay"><?= icon('cash', 22) ?> <span><b><?= t('Cash on delivery', 'ক্যাশ অন ডেলিভারি') ?></b><small><?= t('Pay when your order reaches you', 'পণ্য হাতে পেয়ে টাকা পরিশোধ করুন') ?></small></span></div>
+      <?php else: /* v2.5: bKash / Nagad from Admin > Settings > Payment */ ?>
+      <fieldset class="area paym"><legend><?= t('Payment', 'পেমেন্ট') ?> *</legend>
+        <?php if ($cod): ?><label><input type="radio" name="pay" value="cod" checked><span><?= t('Cash on delivery', 'ক্যাশ অন ডেলিভারি') ?> <small><?= t('Pay when it reaches you', 'হাতে পেয়ে টাকা দিন') ?></small></span></label><?php endif; ?>
+        <?php $first = !$cod; foreach ($pm as $k => $num): ?><label><input type="radio" name="pay" value="<?= $k ?>"<?= $first ? ' checked' : '' ?>><span><?= $k === 'bkash' ? 'bKash' : 'Nagad' ?> <small><?= t('Send money to', 'সেন্ড মানি করুন') ?> <b><?= e($num) ?></b></small></span></label><?php $first = false; endforeach; ?>
+      </fieldset>
+      <div class="trx" id="co-trx"<?= $cod ? ' hidden' : '' ?>><?php if (trim(SL('pay_note')) !== ''): ?><p class="muted"><?= e(SL('pay_note')) ?></p><?php endif; ?><label><?= t('Transaction ID (TrxID)', 'ট্রানজেকশন আইডি (TrxID)') ?> *<input name="trx" maxlength="30" autocomplete="off" placeholder="<?= t('e.g. 9HK3LM2PQ1', 'যেমন: 9HK3LM2PQ1') ?>"></label></div>
+      <?php endif; ?>
       <p class="err" id="co-err" role="alert" hidden></p>
       <button class="btn btn-block" type="submit" id="co-btn"><?= t('Place order', 'অর্ডার কনফার্ম করুন') ?></button>
     </form>
@@ -497,6 +535,11 @@ function api(string $what): void {
             $sub += $qty * (int)$p['price'];
         }
         if (!$items) json_out(['ok' => false, 'error' => t('Your cart is empty.', 'কার্ট খালি।')], 422);
+        $pay = in_array($in['pay'] ?? 'cod', ['cod', 'bkash', 'nagad'], true) ? (string)($in['pay'] ?? 'cod') : 'cod';
+        if ($pay !== 'cod' && trim(S('pay_' . $pay)) === '') $pay = 'cod';
+        if ($pay === 'cod' && S('pay_cod') === '0' && (trim(S('pay_bkash')) !== '' || trim(S('pay_nagad')) !== '')) json_out(['ok' => false, 'error' => t('Please choose bKash or Nagad.', 'bKash বা Nagad বেছে নিন।')], 422);
+        $trx = $pay === 'cod' ? '' : strtoupper(preg_replace('/[^A-Za-z0-9]/', '', (string)($in['trx'] ?? '')));
+        if ($pay !== 'cod' && strlen($trx) < 6) json_out(['ok' => false, 'error' => t('Please enter the Transaction ID (TrxID) of your payment.', 'পেমেন্টের ট্রানজেকশন আইডি (TrxID) লিখুন।')], 422);
         $del = (int)S($area === 'in' ? 'delivery_in' : 'delivery_out');
         if ((int)S('free_over') > 0 && $sub >= (int)S('free_over')) $del = 0;
         $pdo = db();
@@ -504,8 +547,8 @@ function api(string $what): void {
         try {
             $now = date('Y-m-d H:i:s');
             $cu = customer();
-            $pdo->prepare('INSERT INTO orders(name,phone,address,area,note,items,subtotal,delivery,total,status,ip,created,updated,customer_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-                ->execute([$name, $phone, $address, $area, $note, json_encode($items, JSON_UNESCAPED_UNICODE), $sub, $del, $sub + $del, 'new', client_ip(), $now, $now, $cu['id'] ?? null]);
+            $pdo->prepare('INSERT INTO orders(name,phone,address,area,note,items,subtotal,delivery,total,status,ip,created,updated,customer_id,pay,trx,src) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+                ->execute([$name, $phone, $address, $area, $note, json_encode($items, JSON_UNESCAPED_UNICODE), $sub, $del, $sub + $del, 'new', client_ip(), $now, $now, $cu['id'] ?? null, $pay, $trx, 'website']);
             if ($cu && $cu['address'] === '') $pdo->prepare('UPDATE customers SET address=?, area=? WHERE id=?')->execute([$address, $area, $cu['id']]);
             $id = (int)$pdo->lastInsertId();
             $code = 'JB-' . (1000 + $id);
@@ -521,6 +564,13 @@ function api(string $what): void {
             $body .= "\nমোট: " . ($sub + $del) . " টাকা (ডেলিভারি $del)";
             @mail(S('notify_email'), '=?UTF-8?B?' . base64_encode("নতুন অর্ডার $code") . '?=', $body, "Content-Type: text/plain; charset=UTF-8\r\nFrom: noreply@" . preg_replace('/^www\./', '', $_SERVER['HTTP_HOST'] ?? 'localhost'));
         }
+        // v2.5: SMS (if set in Admin > Settings > SMS) and Meta Conversions API Purchase
+        $sec = jget('secrets');
+        if (!empty($sec['sms_on_order'])) {
+            jb_sms($phone, S('shop_name_en') . ": order $code received. Total " . ($sub + $del) . " Tk. We will call you soon.");
+            if (!empty($sec['sms_admin'])) jb_sms((string)$sec['sms_admin'], "New order $code: $name, " . ($sub + $del) . ' Tk');
+        }
+        jb_capi('Purchase', ['code' => $code, 'phone' => $phone, 'total' => $sub + $del, 'items' => $items]);
         json_out(['ok' => true, 'code' => $code, 'url' => url('order/' . $code)]);
     }
     json_out(['error' => 'not found'], 404);

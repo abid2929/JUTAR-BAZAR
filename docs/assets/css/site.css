@@ -1035,3 +1035,13 @@ main:has(> .about)+.trust{margin-top:0;border-top:0}
 }
 /* v2.4.10: side-scrolling rows (products, banners, photos, chips) move only left/right, never up/down */
 .col-row,.grid.rail,.chips,.g-main,.g-thumbs,.ofs-track,.gt-grid{overflow-y:hidden;overscroll-behavior-x:contain;touch-action:pan-x pan-y}
+/* v2.5: flash sale badge, label under name, customer reviews */
+.b-flash{background:linear-gradient(90deg,#e5131d,#ff6a3d)!important;color:#fff!important;border:0!important}
+.card-lbl{display:block;font-size:12px;color:var(--mute,#777);margin:-2px 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.revs{background:#faf8f5}
+.rev-row{display:grid;grid-auto-flow:column;grid-auto-columns:min(320px,82%);gap:16px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:4px 2px 14px;scrollbar-width:thin}
+.rev{margin:0;background:#fff;border:1px solid #eee5dc;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:10px;scroll-snap-align:start;box-shadow:0 10px 30px rgba(40,20,10,.05)}
+.rev-st{color:#f5a623;font-size:17px;letter-spacing:2px}.rev-st span{color:#e3ddd6}
+.rev blockquote{margin:0;flex:1;font-size:14.5px;line-height:1.7;color:#333}
+.lang-bn .rev blockquote{line-height:1.8}
+.rev figcaption b{display:block;font-size:14px}.rev figcaption small{color:#888;font-size:12.5px;line-height:1.5}

@@ -104,14 +104,14 @@ if(co){
   var draw=function(){var area=(co.querySelector('[name=area]:checked')||{}).value||'in';var t=totals(C,D,area);
     sum.innerHTML='<div class="sum"><h3 style="margin-bottom:6px">'+T('Your order','আপনার অর্ডার')+'</h3>'+lines(C,D,false)+'<div style="height:8px"></div>'+freeBar(t.sub)+'<div class="row"><span>'+T('Subtotal','সাবটোটাল')+'</span><b>'+money(t.sub)+'</b></div><div class="row"><span>'+T('Delivery charge','ডেলিভারি চার্জ')+'</span><b>'+(t.del?money(t.del):T('Free','ফ্রি'))+'</b></div><div class="row total"><span>'+T('Total','সর্বমোট')+'</span><span>'+money(t.total)+'</span></div><a href="'+J.base+'cart" class="link" style="margin:8px 0 0;display:inline-block">'+T('Edit cart','কার্ট এডিট করুন')+'</a></div>'};
   fetchItems(function(c,d){C=c;D=d;if(!c.length){location.href=J.base+'cart';return}draw()});
-  co.addEventListener('change',function(e){if(e.target.name==='area')draw()});
+  co.addEventListener('change',function(e){if(e.target.name==='area')draw();if(e.target.name==='pay'){var x=document.getElementById('co-trx');if(x)x.hidden=e.target.value==='cod'}});
   co.addEventListener('submit',function(e){
     e.preventDefault();var err=document.getElementById('co-err');err.hidden=true;
     var f=new FormData(co),bad=null;
     ['name','phone','address'].forEach(function(n){var el=co.querySelector('[name='+n+']');var v=(el.value||'').trim();var ok=n==='phone'?/^(\+?88)?01[3-9]\d{8}$/.test(v.replace(/[\s-]/g,'').replace(/[০-৯]/g,function(d){return '০১২৩৪৫৬৭৮৯'.indexOf(d)})):v.length>=(n==='address'?8:2);el.classList.toggle('bad',!ok);if(!ok&&!bad)bad=el});
     if(bad){bad.focus();err.textContent=T('Please fill in the highlighted fields.','লাল চিহ্নিত ঘরগুলো ঠিকভাবে পূরণ করুন।');err.hidden=false;return}
     var btn=document.getElementById('co-btn');btn.disabled=true;btn.textContent=T('Sending order...','অর্ডার পাঠানো হচ্ছে...');
-    var body={name:f.get('name'),phone:String(f.get('phone')).replace(/[০-৯]/g,function(d){return '০১২৩৪৫৬৭৮৯'.indexOf(d)}),address:f.get('address'),area:f.get('area'),note:f.get('note'),website:f.get('website'),items:load()};
+    var body={name:f.get('name'),phone:String(f.get('phone')).replace(/[০-৯]/g,function(d){return '০১২৩৪৫৬৭৮৯'.indexOf(d)}),address:f.get('address'),area:f.get('area'),note:f.get('note'),website:f.get('website'),pay:f.get('pay')||'cod',trx:f.get('trx')||'',items:load()};
     fetch(J.base+'api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json()}).then(function(r){
       if(r.ok){save([]);location.href=r.url}else{throw new Error(r.error||'error')}
     }).catch(function(x){err.textContent=x.message&&x.message!=='error'?x.message:T('Could not send the order. Check your internet and try again.','অর্ডার পাঠানো যায়নি। ইন্টারনেট চেক করে আবার চেষ্টা করুন।');err.hidden=false;btn.disabled=false;btn.textContent=T('Place order','অর্ডার কনফার্ম করুন')});
@@ -154,3 +154,6 @@ if(co){
   r.addEventListener('touchstart',function(){pause=true;clearTimeout(r._p);r._p=setTimeout(function(){pause=false},6000)},{passive:true});
   if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)tm=setInterval(function(){if(!pause&&!document.hidden)go(i+1)},4500);
 })})();
+/* v2.5: picking a colour shows the photo tagged with that colour in the admin */
+(function(){var g=document.querySelector('.gallery[data-gcol]');if(!g)return;var cols=[];try{cols=JSON.parse(g.getAttribute('data-gcol'))}catch(e){}
+document.querySelectorAll('input[name=color]').forEach(function(r){r.addEventListener('change',function(){var i=cols.indexOf(r.value);if(i<0)return;var b=document.querySelector('[data-goto="'+i+'"]');if(b)b.click();else{var m=document.getElementById('gmain');if(m)m.scrollTo({left:m.clientWidth*i,behavior:'smooth'})}})})})();
