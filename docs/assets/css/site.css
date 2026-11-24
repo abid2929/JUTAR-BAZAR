@@ -1033,3 +1033,5 @@ main:has(> .about)+.trust{margin-top:0;border-top:0}
   .ofc-img{right:2%;height:74%;max-width:50%}
   .ofc-cod{display:none}
 }
+/* v2.4.10: side-scrolling rows (products, banners, photos, chips) move only left/right, never up/down */
+.col-row,.grid.rail,.chips,.g-main,.g-thumbs,.ofs-track,.gt-grid{overflow-y:hidden;overscroll-behavior-x:contain;touch-action:pan-x pan-y}
