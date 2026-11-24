@@ -132,3 +132,4 @@ html[lang=bn] body{font-size:14.5px}html[lang=bn] .nv{font-size:14.5px}
 .ban .card .jb-slide img,.jb-slide img{width:52%!important;height:100%!important;aspect-ratio:auto!important;object-fit:contain!important;background:none!important;border-radius:0!important;filter:drop-shadow(0 10px 14px #0006)}
 #bpv .jb-slide{max-width:520px;margin:0 auto 6px}
 .ban .card.off{opacity:.55}
+.is-demo .side{top:0!important}#demoBar{display:none!important}
