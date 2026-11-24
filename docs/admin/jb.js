@@ -280,4 +280,15 @@ Object.assign(BN, {
 });
 BNR.push([/^(\d+) categories\. Each one has its own page and menu link in the shop\.$/, (m, a) => a + "টা ক্যাটাগরি। প্রতিটার দোকানে নিজের পেজ আর মেনু লিংক আছে।"], [/^(\d+) customers from your orders$/, (m, a) => "অর্ডার থেকে " + a + " জন কাস্টমার"], [/^from (.+)$/, (m, a) => "· " + a], [/^Slide (\d+)$/, (m, a) => "স্লাইড " + a], [/^Tile (\d+)$/, (m, a) => "টাইল " + a], [/^Edit slide (\d+)$/, (m, a) => "স্লাইড " + a + " এডিট"], [/^Login accounts \((\d+)\)$/, (m, a) => "লগইন অ্যাকাউন্ট (" + a + ")"]);
 
+/* v2.6.1: sign in with the password only (main admin). Staff tap the link to type a username. */
+Object.assign(BN, { "Sign in to manage your shop": "শুধু পাসওয়ার্ড দিয়ে ঢুকুন", "Staff? Sign in with username": "স্টাফ? ইউজারনেম দিয়ে ঢুকুন", "First time: create the main (super) admin account. Password 8+ characters.": "নতুন পাসওয়ার্ড দিন (৬+ অক্ষর)। এটাই হবে আপনার অ্যাডমিন পাসওয়ার্ড।", "Password must be 6+ characters.": "পাসওয়ার্ড ৬+ অক্ষরের হতে হবে।", "New password must be 6+ characters.": "নতুন পাসওয়ার্ড ৬+ অক্ষরের হতে হবে।", "New admin needs a 6+ character password.": "নতুন অ্যাডমিনের পাসওয়ার্ড ৬+ অক্ষরের হতে হবে।", "Wrong username or password.": "পাসওয়ার্ড ভুল।", "Password (6+)": "পাসওয়ার্ড (৬+)", "New password (6+)": "নতুন পাসওয়ার্ড (৬+)" });
+(function () {
+  const f = document.getElementById("loginForm"); if (!f) return;
+  const u = f.querySelector("[name=user]"), pw = f.querySelector("[name=pass]");
+  u.required = false; u.hidden = true; pw.minLength = 6;
+  const a = document.createElement("a"); a.href = "#"; a.className = "lg-other"; a.textContent = "Staff? Sign in with username";
+  a.style.cssText = "display:block;text-align:center;margin-top:12px;font-size:13px;color:#777";
+  a.onclick = e => { e.preventDefault(); u.hidden = false; u.focus(); a.remove() };
+  f.appendChild(a);
+})();
 boot();

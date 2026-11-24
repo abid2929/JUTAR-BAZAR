@@ -38,6 +38,17 @@ function users(): array {
   if (!$u && S('admin_hash') !== '') { $u = [['u' => 'admin', 'name' => 'Owner', 'role' => 'super', 'hash' => S('admin_hash'), 'on' => 1]]; jset('admin_users', $u); }
   return $u;
 }
+/* v2.6.1: one-time password from inc/set-pass.txt (a password_hash, never plain text). Sets main admin "admin", then the file is deleted. */
+if (is_file(JB_ROOT . '/inc/set-pass.txt')) {
+  $h = trim((string)file_get_contents(JB_ROOT . '/inc/set-pass.txt'));
+  if (strlen($h) > 50 && $h[0] === '$') {
+    $l = array_values(array_filter(jget('admin_users'), fn($x) => $x['u'] !== 'admin'));
+    array_unshift($l, ['u' => 'admin', 'name' => 'Owner', 'role' => 'super', 'hash' => $h, 'on' => 1]);
+    jset('admin_users', $l); set_setting('admin_hash', $h);
+    if (is_file(JB_ROOT . '/reset-admin.txt')) @unlink(JB_ROOT . '/reset-admin.txt');
+  }
+  @unlink(JB_ROOT . '/inc/set-pass.txt');
+}
 $a = (string)($_GET['a'] ?? '');
 $users = users();
 
@@ -46,8 +57,12 @@ if ($a === 'state') out(['setup' => !$users, 'me' => me(), 'csrf' => me() ? $_SE
 if ($a === 'login') {
   $b = body(); $un = strtolower(cs($b['user'] ?? '', 40)); $pw = (string)($b['pass'] ?? '');
   if (!rate_ok('login', 8, 900)) out(['error' => 'Too many tries. Please wait 15 minutes and try again.'], 429);
+  if ($un === '') {   // v2.6.1: password-only sign-in = the main admin
+    $un = 'admin';
+    if ($users && !array_filter($users, fn($x) => $x['u'] === 'admin')) foreach ($users as $x) if ($x['role'] === 'super' && !empty($x['on'])) { $un = $x['u']; break; }
+  }
   if (!$users) {   // first run: create the super admin
-    if (!preg_match('/^[a-z0-9_.]{3,30}$/', $un) || strlen($pw) < 8) out(['error' => 'Username 3+ letters, password 8+ characters.'], 400);
+    if (!preg_match('/^[a-z0-9_.]{3,30}$/', $un) || strlen($pw) < 6) out(['error' => 'Password must be 6+ characters.'], 400);
     $users = [['u' => $un, 'name' => cs($b['name'] ?? 'Owner', 60) ?: 'Owner', 'role' => 'super', 'hash' => password_hash($pw, PASSWORD_DEFAULT), 'on' => 1]];
     $keep = reset_mode() ? array_values(array_filter(jget('admin_users'), fn($x) => $x['u'] !== $un)) : [];
     jset('admin_users', array_merge($users, $keep)); set_setting('admin_hash', $users[0]['hash']);
@@ -369,8 +384,8 @@ if ($a === 'user_save') {
   need('users'); $b = body(); $un = strtolower(cs($b['u'] ?? '', 30)); $role = (string)($b['role'] ?? 'staff'); $pw = (string)($b['pass'] ?? '');
   if (!preg_match('/^[a-z0-9_.]{3,30}$/', $un) || !isset(ROLES[$role])) out(['error' => 'Username 3+ letters (a-z, 0-9) and a role.'], 400);
   $exists = false; foreach ($users as $u) if ($u['u'] === $un) $exists = true;
-  if (!$exists && strlen($pw) < 8) out(['error' => 'New admin needs an 8+ character password.'], 400);
-  if ($pw !== '' && strlen($pw) < 8) out(['error' => 'Password must be 8+ characters.'], 400);
+  if (!$exists && strlen($pw) < 6) out(['error' => 'New admin needs a 6+ character password.'], 400);
+  if ($pw !== '' && strlen($pw) < 6) out(['error' => 'Password must be 6+ characters.'], 400);
   if (!$exists) $users[] = ['u' => $un, 'name' => '', 'role' => $role, 'hash' => '', 'on' => 1];
   foreach ($users as &$u) if ($u['u'] === $un) { $u['name'] = cs($b['name'] ?? $un, 60); if ($u['u'] !== me()['u']) { $u['role'] = $role; $u['on'] = empty($b['on']) ? 0 : 1; } if ($pw !== '') $u['hash'] = password_hash($pw, PASSWORD_DEFAULT); }
   unset($u); jset('admin_users', $users); audit("saved admin $un"); out(['ok' => 1]);
@@ -380,7 +395,7 @@ if ($a === 'pass') {
   $b = body(); $old = (string)($b['old'] ?? ''); $new = (string)($b['new'] ?? ''); $mine = null;
   foreach ($users as $u) if ($u['u'] === me()['u']) $mine = $u;
   if (!$mine || !password_verify($old, $mine['hash'])) out(['error' => 'Current password is wrong.'], 403);
-  if (strlen($new) < 8) out(['error' => 'New password must be 8+ characters.'], 400);
+  if (strlen($new) < 6) out(['error' => 'New password must be 6+ characters.'], 400);
   foreach ($users as &$u) if ($u['u'] === me()['u']) $u['hash'] = password_hash($new, PASSWORD_DEFAULT); unset($u);
   jset('admin_users', $users); audit('changed own password'); out(['ok' => 1]);
 }
