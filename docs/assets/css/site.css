@@ -1045,3 +1045,47 @@ main:has(> .about)+.trust{margin-top:0;border-top:0}
 .rev blockquote{margin:0;flex:1;font-size:14.5px;line-height:1.7;color:#333}
 .lang-bn .rev blockquote{line-height:1.8}
 .rev figcaption b{display:block;font-size:14px}.rev figcaption small{color:#888;font-size:12.5px;line-height:1.5}
+/* v2.6 premium polish: soft studio tiles, rounded cards, eyebrow titles, nicer trust + footer */
+:root{--tile:#f4f2ef;--rad:14px}
+.card-img{background:var(--tile);border-radius:var(--rad)}
+.card-img img{mix-blend-mode:multiply;padding:6%;object-fit:contain}
+.card{transition:transform .35s var(--ease)}
+.card:hover{transform:translateY(-3px)}
+.card:hover .card-img{box-shadow:0 14px 34px rgba(30,20,10,.10)}
+.card-img{transition:box-shadow .35s var(--ease)}
+.badges{top:12px;left:12px}
+.badges i,.b-off{border-radius:99px;padding:3px 10px;font-size:11.5px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.b-new{background:#fff;color:var(--ink)!important;border:0!important}
+.card-body{padding:12px 4px 0}
+.card h3{font-weight:500}
+.price b{font-size:17px;color:var(--ink)}
+.card .price b{color:var(--accent)}
+.sec-head h2 small{display:block!important;font-size:12.5px;font-weight:600;color:var(--accent);margin-bottom:8px;font-family:var(--fb)}
+html:not(.lang-bn) .sec-head h2 small{letter-spacing:.14em;text-transform:uppercase;font-size:11.5px}
+.col-tile{border-radius:var(--rad)}
+/* product page gallery */
+.g-main{background:var(--tile)}
+.g-main img{mix-blend-mode:multiply;object-fit:contain;padding:5%}
+.g-thumbs button{background:var(--tile);border-radius:10px;border-width:1.5px}
+.g-thumbs img{mix-blend-mode:multiply;object-fit:contain;padding:8%}
+.opts span{border-radius:10px}
+.btn{border-radius:12px}
+.buy-btns .btn,.sticky-buy .btn{border-radius:12px}
+.pd-info .price.big b{color:var(--accent)}
+/* trust strip */
+.trust{background:linear-gradient(180deg,#faf8f5,#f3efe9)}
+.trust-in div{background:#fff;border:1px solid #eee7de;border-radius:16px;padding:18px 16px;align-items:flex-start;text-align:left;box-shadow:0 8px 24px rgba(40,20,10,.04)}
+.trust-in .ic{color:var(--accent);background:#fdecec;border-radius:12px;padding:9px;width:46px;height:46px;stroke-width:1.6}
+/* footer payments */
+.pay-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pay-chips span{font-size:12.5px;color:#ddd;border:1px solid #333;border-radius:99px;padding:4px 12px;background:#181818}
+@media (min-width:900px){
+  .g-main{border-radius:20px}
+  .trust-in{gap:18px;padding-top:44px;padding-bottom:44px}
+  .trust-in div{padding:22px 20px}
+}
+@media (max-width:899px){
+  .g-main{margin:0;border-radius:16px}
+  .card-body{padding-top:10px}
+}
+.grid.rail,.col-row{scroll-padding-inline:18px}

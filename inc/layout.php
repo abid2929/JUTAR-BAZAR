@@ -145,6 +145,7 @@ function page_foot(): void {
     <div class="ftr-brand">
       <a href="<?= e(url()) ?>" class="logo logo-inv"><?= logo_html() ?></a>
       <p><?= e(SL('footer_note')) ?></p>
+      <div class="pay-chips"><?php if (($s['pay_cod'] ?? '1') !== '0'): ?><span><?= t('Cash on delivery', 'ক্যাশ অন ডেলিভারি') ?></span><?php endif; ?><?php if (trim($s['pay_bkash'] ?? '') !== ''): ?><span><?= t('bKash', 'বিকাশ') ?></span><?php endif; ?><?php if (trim($s['pay_nagad'] ?? '') !== ''): ?><span><?= t('Nagad', 'নগদ') ?></span><?php endif; ?></div>
       <div class="socials">
         <?php foreach (['facebook' => 'fb', 'instagram' => 'ig', 'tiktok' => 'tt', 'youtube' => 'yt'] as $k => $ic): if ($s[$k]): ?>
           <a href="<?= e($s[$k]) ?>" target="_blank" rel="noopener" aria-label="<?= e($k) ?>"><?= icon($ic, 20) ?></a>
