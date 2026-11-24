@@ -1125,3 +1125,9 @@ html:not(.lang-bn) .sec-head h2 small{letter-spacing:.14em;text-transform:upperc
   .of.on .ofc-perks{opacity:1;translate:0 0}
 }
 @media(max-width:899px){.hdr .logo{margin-left:12px}}@media(max-width:370px){.hdr .logo{margin-left:6px}}
+/* v2.6.4: a11y + speed fixes from Lighthouse */
+.ofs-dots button{width:24px!important;height:24px}
+.ofs-dots button.on{width:36px!important}
+.price s{color:#7a736c}
+@media (prefers-reduced-motion:no-preference){.ofs{animation:none}}
+.price s,.card .price s{color:#6b655f!important}
