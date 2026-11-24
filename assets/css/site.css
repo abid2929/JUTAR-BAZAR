@@ -1138,3 +1138,7 @@ html:not(.lang-bn) .sec-head h2 small{letter-spacing:.14em;text-transform:upperc
 .ftr-bot .sig .sg-i{width:14px;height:14px;border-radius:3px;display:grid;place-items:center;flex-shrink:0;color:#fff;font:700 9px/1 system-ui,sans-serif}
 .ftr-bot .sig .sg-li{background:#0a66c2}.ftr-bot .sig .sg-bx{background:linear-gradient(135deg,#ff8a3d,#f04e23)}
 @media(max-width:600px){.ftr-bot .sig{justify-content:flex-start}}
+/* v2.6.6: credit on its own centered last row with a thin line above (like Kazi Office) */
+.ftr-bot{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center;gap:0!important}
+.ftr-bot .sig{width:100%;justify-content:center!important;border-top:1px solid rgba(255,255,255,.08);margin-top:12px;padding-top:12px;font-size:12px}
+@media(max-width:600px){.ftr-bot .sig>span:first-child{flex-basis:100%}}
