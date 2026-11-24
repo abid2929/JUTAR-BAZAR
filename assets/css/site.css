@@ -1089,3 +1089,25 @@ html:not(.lang-bn) .sec-head h2 small{letter-spacing:.14em;text-transform:upperc
   .card-body{padding-top:10px}
 }
 .grid.rail,.col-row{scroll-padding-inline:18px}
+/* v2.6.2: first-screen entrance (runs once on load, everything ends fully visible) */
+@keyframes jbDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes jbUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes jbFade{from{opacity:0}to{opacity:1}}
+@keyframes jbShoe{0%,100%{translate:0 0}50%{translate:0 -2.2%}}
+@keyframes jbGlow{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:no-preference){
+  .hdr-in{animation:jbDown .7s var(--ease) both}
+  .ofs{animation:jbFade .8s ease both}
+  .of.on .ofc-txt>*{animation:jbUp .8s var(--ease) both}
+  .of.on .ofc-txt>*:nth-child(2){animation-delay:.12s}
+  .of.on .ofc-txt>*:nth-child(3){animation-delay:.24s}
+  .of.on .ofc-txt>*:nth-child(4){animation-delay:.36s}
+  .of.on .ofc-ring{animation:jbGlow 1.2s var(--ease) both}
+  .of.on .ofc-img{animation:jbShoe 5s ease-in-out 1.2s infinite}
+  .gtiles .gt{animation:jbUp .8s var(--ease) both}
+  .gtiles .gt:nth-child(1){animation-delay:.35s}
+  .gtiles .gt:nth-child(2){animation-delay:.47s}
+  .gtiles .gt:nth-child(3){animation-delay:.59s}
+  .gtiles .gt:nth-child(n+4){animation-delay:.7s}
+  .gtiles .sec-head,.gtiles h2{animation:jbFade .8s ease .25s both}
+}

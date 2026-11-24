@@ -81,7 +81,7 @@ function page_head(string $title = '', string $desc = '', string $ogImg = ''): v
 </head>
 <body>
 <a class="skip" href="#main"><?= t('Skip to content', 'মূল অংশে যান') ?></a>
-<?php if (S('announce_on') === '1' && trim(SL('announce')) !== ''): $msgs = array_values(array_filter(array_map('trim', preg_split('/\s*•\s*/u', SL('announce'))))); /* v2.5: top bar, Admin > Homepage CMS */ ?>
+<?php if (false): /* v2.6.2: top bar removed for good (owner Nov 24) */ $msgs = array_values(array_filter(array_map('trim', preg_split('/\s*•\s*/u', SL('announce'))))); /* v2.5: top bar, Admin > Homepage CMS */ ?>
 <div class="announce" role="note"><div class="announce-track"><?php for ($r = 0; $r < 2; $r++) foreach ($msgs as $m) echo '<span' . ($r ? ' aria-hidden="true"' : '') . '>' . e($m) . '</span>'; ?></div></div>
 <?php endif; ?>
 <header class="hdr" id="hdr">

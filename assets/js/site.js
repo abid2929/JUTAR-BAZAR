@@ -29,7 +29,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')document.que
   var seen=false;try{seen=(Date.now()-(+localStorage.getItem('jb_wa_t')||0))<15*60*1000}catch(e){}
   if(seen||/\/(checkout|order|account|login|register)/.test(location.pathname))return;
   var close=function(){pop.hidden=true;try{localStorage.setItem('jb_wa_t',String(Date.now()))}catch(e){}};
-  setTimeout(function(){pop.hidden=false},sec*1000);
+  /* v2.6.2: keep the first screen clean: open only after the visitor scrolls a little AND the delay has passed */
+  var t0=Date.now(),shown=false,show=function(){if(shown)return;if(window.scrollY<300||Date.now()-t0<sec*1000)return;shown=true;pop.hidden=false;removeEventListener('scroll',show)};
+  addEventListener('scroll',show,{passive:true});setTimeout(show,sec*1000);
   pop.addEventListener('click',function(e){if(e.target.closest('[data-wa-close]')||e.target.closest('#wa-go'))close()});
 })();
 /* reveal on scroll */
