@@ -195,7 +195,7 @@ foreach (jget('catalog_cols') as $cc): if (empty($cc['on']) || empty($cc['ids'])
     <p><?= nl2br(e(SL('about'))) ?></p>
   </div>
 </section>
-<script type="application/ld+json"><?= json_encode(['@context' => 'https://schema.org', '@type' => 'ShoeStore', 'name' => $s['shop_name'], 'alternateName' => $s['shop_name_en'], 'url' => full_url(), 'telephone' => $s['phone'], 'address' => $s['address'], 'image' => $heroImg, 'priceRange' => '৳৳'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></script>
+<script type="application/ld+json"><?= json_encode(['@context' => 'https://schema.org', '@type' => 'ShoeStore', 'name' => $s['shop_name'], 'logo' => full_url('assets/img/logo-512.png'), 'alternateName' => $s['shop_name_en'], 'url' => full_url(), 'telephone' => $s['phone'], 'address' => $s['address'], 'image' => $heroImg, 'priceRange' => '৳৳'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></script>
 <?php
     page_foot();
 }
