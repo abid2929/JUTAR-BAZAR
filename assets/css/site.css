@@ -1131,3 +1131,10 @@ html:not(.lang-bn) .sec-head h2 small{letter-spacing:.14em;text-transform:upperc
 .price s{color:#7a736c}
 @media (prefers-reduced-motion:no-preference){.ofs{animation:none}}
 .price s,.card .price s{color:#6b655f!important}
+/* v2.6.5: footer credit, same as the Kazi Office site */
+.ftr-bot .sig{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .7rem;font-size:12.5px;line-height:1.4;color:#8d867f}
+.ftr-bot .sig a{display:inline-flex;align-items:center;gap:.3rem;color:#d8d2cc;font-weight:600;text-decoration:none;transition:color .2s}
+.ftr-bot .sig a:hover{color:#fff;text-decoration:underline}
+.ftr-bot .sig .sg-i{width:14px;height:14px;border-radius:3px;display:grid;place-items:center;flex-shrink:0;color:#fff;font:700 9px/1 system-ui,sans-serif}
+.ftr-bot .sig .sg-li{background:#0a66c2}.ftr-bot .sig .sg-bx{background:linear-gradient(135deg,#ff8a3d,#f04e23)}
+@media(max-width:600px){.ftr-bot .sig{justify-content:flex-start}}
