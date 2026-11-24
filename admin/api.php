@@ -29,7 +29,11 @@ function cs($v, int $n = 300): string { return trim(mb_substr((string)$v, 0, $n)
 function img_ok(string $s): bool { return (bool)preg_match('~^(https://\S+|(uploads|assets)/[A-Za-z0-9_\-/.]+\.(jpe?g|png|webp|gif|svg))$~i', $s) && strpos($s, '..') === false; }
 
 /* ---------- admin users (the old single password becomes user "admin") ---------- */
+/* Forgot the password? Make an empty file "reset-admin.txt" in public_html (cPanel File Manager > + File).
+   The login page then lets you make a new main admin; the file is deleted right after. Other admins stay. */
+function reset_mode(): bool { return is_file(JB_ROOT . '/reset-admin.txt'); }
 function users(): array {
+  if (reset_mode()) return [];
   $u = jget('admin_users');
   if (!$u && S('admin_hash') !== '') { $u = [['u' => 'admin', 'name' => 'Owner', 'role' => 'super', 'hash' => S('admin_hash'), 'on' => 1]]; jset('admin_users', $u); }
   return $u;
@@ -45,7 +49,10 @@ if ($a === 'login') {
   if (!$users) {   // first run: create the super admin
     if (!preg_match('/^[a-z0-9_.]{3,30}$/', $un) || strlen($pw) < 8) out(['error' => 'Username 3+ letters, password 8+ characters.'], 400);
     $users = [['u' => $un, 'name' => cs($b['name'] ?? 'Owner', 60) ?: 'Owner', 'role' => 'super', 'hash' => password_hash($pw, PASSWORD_DEFAULT), 'on' => 1]];
-    jset('admin_users', $users); set_setting('admin_hash', $users[0]['hash']);
+    $keep = reset_mode() ? array_values(array_filter(jget('admin_users'), fn($x) => $x['u'] !== $un)) : [];
+    jset('admin_users', array_merge($users, $keep)); set_setting('admin_hash', $users[0]['hash']);
+    if (reset_mode()) @unlink(JB_ROOT . '/reset-admin.txt');
+    $users = jget('admin_users');
   }
   $found = null; foreach ($users as $u) if ($u['u'] === $un && !empty($u['on'])) $found = $u;
   if (!$found || !password_verify($pw, $found['hash'])) { usleep(600000); out(['error' => 'Wrong username or password.'], 403); }
