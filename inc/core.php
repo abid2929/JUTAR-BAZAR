@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Dhaka');
 mb_internal_encoding('UTF-8');
 
 define('JB_ROOT', dirname(__DIR__));
-define('JB_VERSION', '2.6.6');
+define('JB_VERSION', '2.6.7');
 
 /** Private data folder: ~/jutarbazar-data (outside public_html) if possible, else ./data (blocked by .htaccess). */
 function jb_data_dir(): string {
@@ -75,6 +75,8 @@ function db(): PDO {
     else jb_three_cats($pdo);
     jb_fee_75($pdo);
     jb_v25($pdo);
+    // v2.6.7 (owner Nov 25): new WhatsApp number. Changes only the old default, once.
+    $pdo->exec("UPDATE settings SET v='8801608565035' WHERE k='whatsapp' AND REPLACE(REPLACE(REPLACE(v,'+',''),'-',''),' ','') IN ('8801624244920','01624244920')");
     return $pdo;
 }
 
@@ -189,7 +191,7 @@ function jb_defaults(): array {
         'free_over' => '0',
         'about' => 'We believe a good pair of shoes starts a good day. So we pick every pair for quality, help you get the right size, and keep our prices honest.',
         'phone' => '01624-244920',
-        'whatsapp' => '8801624244920',
+        'whatsapp' => '8801608565035',
         'email' => '',
         'address' => 'Opposite Jamuna Future Park, Nandha Bus Stand (Life BD Shop), Dhaka',
         'facebook' => 'https://www.facebook.com/share/1A5UHxTjZH/',

@@ -51,7 +51,7 @@
 ## ✨ What's inside
 
 **Storefront (opens in বাংলা, one tap to English)**
-- Real shop info: JUTAR BAZAR BD, call/WhatsApp 01624-244920, Facebook page, Dhaka address (opposite Jamuna Future Park). All editable in Settings.
+- Real shop info: JUTAR BAZAR BD, call 01624-244920, WhatsApp 01608-565035, Facebook page, Dhaka address (opposite Jamuna Future Park). All editable in Settings.
 - Offer banner slider at the top. Every collection page opens on its own banner.
 - **Men / Women / Kids** sections, plus 3 categories: Running, Sneakers, Fashion.
 - Product pages with a size guide, an "only X left" badge, related products and recently viewed.
