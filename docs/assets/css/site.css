@@ -1191,3 +1191,15 @@ html:not(.lang-bn) .sec-head h2 small{letter-spacing:.14em;text-transform:upperc
 .badges .b-new{background:#fff!important}
 @media (max-width:899px){body:has(.sticky-buy.on) .toast{bottom:calc(150px + env(safe-area-inset-bottom,0px))}}
 .toast{max-width:calc(100vw - 32px);text-align:center;z-index:310}
+/* v2.6.10 phone tab bar: room for the iPhone home line, nothing pokes above the top line */
+.tabbar{box-sizing:content-box;height:60px;padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar>*{gap:2px;height:60px;overflow:visible}
+.tabbar>.on::before{top:-1px;width:24px;margin-left:-12px;height:2px;border-radius:0 0 2px 2px}
+@media (max-width:899px){
+  .tabbar .tb-wa i{width:28px;height:28px;margin:0;box-shadow:0 2px 8px rgba(37,211,102,.35)}
+  .tabbar .tb-wa .ic{width:17px;height:17px}
+  .tabbar .ic{width:22px;height:22px}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  .sticky-buy{bottom:calc(61px + env(safe-area-inset-bottom,0px))}
+}
+@media (max-width:899px){.tabbar>a>svg.ic,.tabbar>button>svg.ic{width:22px;height:28px}}
