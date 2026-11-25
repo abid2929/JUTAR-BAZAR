@@ -322,8 +322,12 @@ function product(string $slug): void {
   <div class="pd-in">
     <?php $gcol = json_decode((string)($p['gal_colors'] ?? '[]'), true) ?: []; ?>
     <div class="gallery<?= count($imgs) > 1 ? ' multi' : '' ?>"<?= array_filter($gcol) ? ' data-gcol="' . e(json_encode(array_values($gcol), JSON_UNESCAPED_UNICODE)) . '"' : '' ?>>
+      <div class="g-stage">
       <div class="g-main" id="gmain">
         <?php foreach ($imgs as $i => $im): ?><img src="<?= e(img_url($im)) ?>" alt="<?= e($p['name']) ?> <?= t('photo', 'ছবি') ?> <?= $i + 1 ?>" width="800" height="800" <?= $i ? 'loading="lazy"' : 'fetchpriority="high"' ?>><?php endforeach; ?>
+      </div>
+      <i class="g-lens" aria-hidden="true"></i>
+      <button type="button" class="g-zhint" data-zoom aria-label="<?= t('Zoom photo', 'ছবি বড় করে দেখুন') ?>"><?= icon('search', 16) ?><span><?= t('Zoom', 'জুম') ?></span></button>
       </div>
       <?php if (count($imgs) > 1): ?>
       <div class="g-thumbs"><?php foreach ($imgs as $i => $im): ?><button data-goto="<?= $i ?>" class="<?= $i ? '' : 'on' ?>" aria-label="<?= t('Photo', 'ছবি') ?> <?= $i + 1 ?>"><img src="<?= e(img_url($im)) ?>" alt="" loading="lazy" width="120" height="120"></button><?php endforeach; ?></div>
