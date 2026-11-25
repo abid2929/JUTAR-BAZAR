@@ -29,12 +29,20 @@ function icon(string $n, int $s = 22): string {
     return '<svg class="ic" width="' . $s . '" height="' . $s . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $p . '</svg>';
 }
 
+// v2.7.0: shoe mark (red rounded square with a white sneaker)
+function logo_mark(): string {
+    static $n = 0; $id = 'lmg' . (++$n);
+    return '<svg class="logo-mark" viewBox="0 0 72 72" aria-hidden="true"><defs><linearGradient id="' . $id . '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff3b3b"/><stop offset="1" stop-color="#c50f17"/></linearGradient></defs>'
+        . '<rect width="72" height="72" rx="20" fill="url(#' . $id . ')"/><g transform="translate(4,13) scale(.62) rotate(-8 50 35)">'
+        . '<path d="M6,50C6,42 7,30 11,21C16,19 23,23 31,25C35,20 39,13 45,11C50,11 52,15 54,19C62,25 73,31 85,34C93,36 97,41 97,46L97,50C97,54 95,56 90,56L11,56C8,56 6,54 6,50Z" fill="#fff"/>'
+        . '<path d="M8,47H96M20,35H40" stroke="#e5131d" stroke-width="3" stroke-linecap="round"/><path d="M55,23l5-5M62,27l5-5M69,31l5-5" stroke="#e5131d" stroke-width="3" stroke-linecap="round"/></g></svg>';
+}
 function logo_html(): string {
     if (S('logo')) return '<img src="' . e(img_url(S('logo'))) . '" alt="' . e(S('shop_name')) . '" class="logo-img">';
     $nm = S('shop_name_en') ?: S('shop_name'); $w = preg_split('/\s+/', trim($nm), 2);
     $rest = $w[1] ?? ''; $bd = '';
     if (preg_match('/^(.*?)\s*\bBD$/i', $rest, $m)) { $rest = $m[1]; $bd = '<sup class="logo-bd">BD</sup>'; }
-    return '<span class="logo-txt"><b><i>' . e($w[0]) . '</i>' . ($rest !== '' ? ' ' . e($rest) : '') . $bd . '</b><small>Footwear</small></span>';
+    return logo_mark() . '<span class="logo-txt"><b><i>' . e($w[0]) . '</i>' . ($rest !== '' ? ' ' . e($rest) : '') . $bd . '</b><small>Footwear</small><em class="logo-bn" lang="bn">জুতার বাজার বিডি</em></span>';
 }
 
 function page_head(string $title = '', string $desc = '', string $ogImg = ''): void {
@@ -69,8 +77,8 @@ function page_head(string $title = '', string $desc = '', string $ogImg = ''): v
 <meta property="og:description" content="<?= e(mb_substr($desc, 0, 200)) ?>">
 <meta property="og:type" content="website">
 <?php if ($ogImg): ?><meta property="og:image" content="<?= e($ogImg) ?>"><?php endif; ?>
-<?php if (S('logo')): ?><link rel="icon" href="<?= e(img_url(S('logo'))) ?>"><?php else: ?><link rel="icon" type="image/png" sizes="48x48" href="<?= e(url('assets/img/favicon-48.png')) ?>"><link rel="icon" type="image/png" sizes="192x192" href="<?= e(url('assets/img/favicon-192.png')) ?>"><?php endif; ?>
-<link rel="apple-touch-icon" href="<?= e(url('assets/img/apple-touch-icon.png')) ?>"><link rel="manifest" href="<?= e(url('site.webmanifest')) ?>">
+<?php if (S('logo')): ?><link rel="icon" href="<?= e(img_url(S('logo'))) ?>"><?php else: ?><link rel="icon" type="image/png" sizes="48x48" href="<?= e(url('assets/img/favicon-48.png') . '?v=270') ?>"><link rel="icon" type="image/png" sizes="192x192" href="<?= e(url('assets/img/favicon-192.png')) ?>"><?php endif; ?>
+<link rel="apple-touch-icon" href="<?= e(url('assets/img/apple-touch-icon.png') . '?v=270') ?>"><link rel="manifest" href="<?= e(url('site.webmanifest')) ?>">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Jost:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="<?= e(url('assets/css/site.css')) ?>?v=<?= JB_VERSION ?>">

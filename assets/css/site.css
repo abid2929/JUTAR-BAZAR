@@ -1203,3 +1203,15 @@ html:not(.lang-bn) .sec-head h2 small{letter-spacing:.14em;text-transform:upperc
   .sticky-buy{bottom:calc(61px + env(safe-area-inset-bottom,0px))}
 }
 @media (max-width:899px){.tabbar>a>svg.ic,.tabbar>button>svg.ic{width:22px;height:28px}}
+/* v2.7.0 logo: shoe mark + wordmark + Bangla line */
+.logo{gap:10px}
+.logo-mark{width:42px;height:42px;flex:none;display:block;filter:drop-shadow(0 3px 8px rgba(229,19,29,.22))}
+.logo-txt{align-items:flex-start}
+.logo-txt .logo-bn{display:block;font-style:normal;font-family:'Hind Siliguri','Noto Sans Bengali',sans-serif;font-size:12px;font-weight:600;color:#8d877f;letter-spacing:0;margin-top:3px;line-height:1.1;white-space:nowrap}
+.ftr .logo-txt .logo-bn{color:rgba(255,255,255,.6)}
+@media (max-width:899px){.hdr .logo-mark{width:32px;height:32px}.hdr .logo{gap:7px}.hdr .logo-bn{display:none}}
+@media (max-width:370px){.hdr .logo-mark{width:28px;height:28px}.hdr .logo{gap:6px}}
+@media (max-width:370px){.hdr .logo-mark{width:24px;height:24px}.hdr .logo{gap:5px;margin-left:2px!important}.hdr .logo-txt b{font-size:15px!important;letter-spacing:.03em!important}.hdr-act{margin-left:6px!important}.hdr .logo-bd{font-size:.5em}}
+@media (min-width:371px) and (max-width:420px){.hdr .logo-txt b{font-size:18px!important;letter-spacing:.05em!important}}
+@media (min-width:900px){.logo-txt .logo-bn{margin-top:5px}}
+@media (max-width:370px){.hdr .logo-bd{display:none}.hdr .logo-txt b{font-size:16px!important}}
