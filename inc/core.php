@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Dhaka');
 mb_internal_encoding('UTF-8');
 
 define('JB_ROOT', dirname(__DIR__));
-define('JB_VERSION', '2.6.7');
+define('JB_VERSION', '2.6.8');
 
 /** Private data folder: ~/jutarbazar-data (outside public_html) if possible, else ./data (blocked by .htaccess). */
 function jb_data_dir(): string {
@@ -77,6 +77,11 @@ function db(): PDO {
     jb_v25($pdo);
     // v2.6.7 (owner Nov 25): new WhatsApp number. Changes only the old default, once.
     $pdo->exec("UPDATE settings SET v='8801608565035' WHERE k='whatsapp' AND REPLACE(REPLACE(REPLACE(v,'+',''),'-',''),' ','') IN ('8801624244920','01624244920')");
+    // v2.6.8 (owner Nov 25): order alert email. Fills it once, only if empty.
+    if (!$pdo->query("SELECT 1 FROM settings WHERE k='mig_268'")->fetchColumn()) {
+        $pdo->exec("UPDATE settings SET v='' WHERE k='notify_email' AND TRIM(v)=''");
+        $pdo->exec("INSERT OR IGNORE INTO settings(k,v) VALUES('mig_268','1')");
+    }
     return $pdo;
 }
 

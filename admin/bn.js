@@ -106,7 +106,7 @@ const BN = {
 "New admin needs an 8+ character password.":"নতুন অ্যাডমিনের পাসওয়ার্ড ৮+ অক্ষরের হতে হবে।","New password must be 8+ characters.":"নতুন পাসওয়ার্ড ৮+ অক্ষরের হতে হবে।","No permission":"অনুমতি নেই",
 "Only JPG, PNG, WEBP or GIF images.":"শুধু JPG, PNG, WEBP বা GIF ছবি।","Only the super admin can change keys.":"শুধু সুপার অ্যাডমিন কী বদলাতে পারবে।","Password must be 8+ characters.":"পাসওয়ার্ড ৮+ অক্ষরের হতে হবে।",
 "Session expired. Please log in again.":"সেশন শেষ। আবার লগইন করুন।","Too big":"অনেক বড়","Too many tries. Close the browser and try again later.":"অনেকবার চেষ্টা হয়েছে। ব্রাউজার বন্ধ করে পরে চেষ্টা করুন।",
-"Unknown data":"অজানা তথ্য","Upload failed (max 6 MB).":"আপলোড হয়নি (সর্বোচ্চ ৬ MB)।","Username 3+ letters (a-z, 0-9) and a role.":"ইউজারনেম ৩+ অক্ষর (a-z, 0-9) আর একটা রোল দিন।",
+"Unknown data":"অজানা তথ্য","Upload failed. Try another photo (max 12 MB).":"আপলোড হয়নি। অন্য ছবি দিয়ে চেষ্টা করুন।","Upload failed (max 6 MB).":"আপলোড হয়নি (সর্বোচ্চ ৬ MB)।","Username 3+ letters (a-z, 0-9) and a role.":"ইউজারনেম ৩+ অক্ষর (a-z, 0-9) আর একটা রোল দিন।",
 "Username 3+ letters, password 8+ characters.":"ইউজারনেম ৩+ অক্ষর, পাসওয়ার্ড ৮+ অক্ষর।","Wrong username or password.":"ইউজারনেম বা পাসওয়ার্ড ভুল।","You cannot delete yourself.":"নিজেকে ডিলিট করা যাবে না।",
 "You do not have permission for this.":"এটার অনুমতি আপনার নেই।",
 "Good morning":"শুভ সকাল","Good afternoon":"শুভ দুপুর","Good evening":"শুভ সন্ধ্যা","Good night":"শুভ রাত্রি","new orders":"নতুন অর্ডার","sales":"বিক্রি","waiting":"অপেক্ষায়",

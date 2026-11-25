@@ -6,7 +6,18 @@ const badges = x => [x.ft && '<span class="tag o">Featured</span>', x.fs && '<sp
 function cats() { return (DB.categories || []).slice().sort((a, b) => (a.order || 0) - (b.order || 0)) }
 function findProd(id) { const P = DB.products; for (const k in P) { const j = (P[k] || []).findIndex((x, jj) => (x.id || k + jj) === id); if (j > -1) return { k, j, x: P[k][j] } } return null }
 function newId() { return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5) }
-async function upFile(file) { const fd = new FormData(); fd.append("photo", file); toast("Uploading…"); const j = await api("upload", null, "", fd); if (j.error) { toast(j.error); return null } toast("Image uploaded ✓"); return j.i }
+// v2.6.8: shrink big photos in the browser (max 2000px, JPEG 0.9) so any phone photo uploads fine
+async function shrinkImg(file) {
+  try {
+    if (!file || !/^image\/(jpeg|png|webp|heic|heif)$/i.test(file.type) || file.size < 1500000) return file;
+    const bmp = await createImageBitmap(file, { imageOrientation: "from-image" });
+    const k = Math.min(1, 2000 / Math.max(bmp.width, bmp.height)); const w = Math.round(bmp.width * k), h = Math.round(bmp.height * k);
+    const c = document.createElement("canvas"); c.width = w; c.height = h; const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, w, h); x.drawImage(bmp, 0, 0, w, h); bmp.close && bmp.close();
+    const b = await new Promise(r => c.toBlob(r, "image/jpeg", 0.9)); if (!b || b.size >= file.size) return file;
+    return new File([b], (file.name || "photo").replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
+  } catch (e) { return file }
+}
+async function upFile(file) { if (!file) return null; toast("Uploading…"); file = await shrinkImg(file); const fd = new FormData(); fd.append("photo", file); toast("Uploading…"); const j = await api("upload", null, "", fd); if (j.error) { toast(j.error); return null } toast("Image uploaded ✓"); return j.i }
 async function pullPhotos(b) { b.disabled = true; toast("Copying photos to your server…"); const j = await api("pull", {}); b.disabled = false; toast(j.error || `Done: ${j.new} new, ${j.have} already there, ${j.fail} failed`) }
 
 /* ---------- products ---------- */

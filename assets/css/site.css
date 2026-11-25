@@ -1142,3 +1142,15 @@ html:not(.lang-bn) .sec-head h2 small{letter-spacing:.14em;text-transform:upperc
 .ftr-bot{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center;gap:0!important}
 .ftr-bot .sig{width:100%;justify-content:center!important;border-top:1px solid rgba(255,255,255,.08);margin-top:12px;padding-top:12px;font-size:12px}
 @media(max-width:600px){.ftr-bot .sig>span:first-child{flex-basis:100%}}
+/* v2.6.8 compact WhatsApp popup (phone + PC) */
+.wa-pop{width:min(248px,calc(100vw - 40px));right:14px;bottom:calc(72px + env(safe-area-inset-bottom,0px));border-radius:14px;box-shadow:0 14px 40px rgba(20,17,14,.26)}
+.wa-pop-head{gap:8px;padding:7px 6px 7px 9px}
+.wa-pop-head b{font-size:13.5px;letter-spacing:0;line-height:1.2}
+.wa-pop-head small,.wa-pop small{font-size:10.5px;line-height:1.3}
+.wa-pop-av{width:28px;height:28px}.wa-pop-av svg{width:15px;height:15px}
+.wa-pop .wa-x{width:26px;height:26px}.wa-pop .wa-x svg{width:15px;height:15px}
+.wa-pop-body{padding:8px 9px 9px}
+.wa-pop .wa-bubble{font-size:12.5px;line-height:1.5;padding:7px 9px;margin:0}
+.wa-pop .btn{height:36px;font-size:13px}
+.wa-pop .btn svg{width:15px;height:15px}
+@media (min-width:900px){.wa-pop{width:272px;right:24px;bottom:92px}.wa-pop-head b{font-size:14.5px}.wa-pop .wa-bubble{font-size:13.5px}.wa-pop .btn{height:40px;font-size:13.5px}}

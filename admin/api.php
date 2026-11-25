@@ -265,7 +265,7 @@ if ($a === 'put') {
 if ($a === 'upload') {
   need('products');
   $f = $_FILES['photo'] ?? null;
-  if (!$f || $f['error'] !== UPLOAD_ERR_OK || $f['size'] > 12000000) out(['error' => 'Upload failed (max 12 MB).'], 400);
+  if (!$f || $f['error'] !== UPLOAD_ERR_OK || $f['size'] > 12000000) out(['error' => 'Upload failed. Try another photo (max 12 MB).'], 400);
   $p = save_image($f['tmp_name']);
   if (!$p) out(['error' => 'Only JPG, PNG, WEBP or GIF images.'], 400);
   out(['ok' => 1, 'i' => $p]);
