@@ -1323,3 +1323,30 @@ html:not(.lang-bn) .sec-head h2 small{letter-spacing:.14em;text-transform:upperc
 .gt b{color:#fff;font-weight:600}
 .gt span::before{background:rgba(255,255,255,.8)}
 .gt i{background:#fff;color:#111;border:0;font-weight:600}
+/* v2.7.6 light premium (owner picked Nov 26): cream banner, black text, pastel cards */
+.of.ofc{background:radial-gradient(55% 85% at 74% 45%,#fff 0%,transparent 70%),linear-gradient(110deg,#f6f2ec 0%,#f3eee7 40%,color-mix(in srgb,var(--g1) 26%,#f6f2ec) 100%);color:#141414}
+.of.ofc::after{background:none}
+.of.ofc::before{border:0}
+.ofc-k{color:#e5131d;opacity:1}
+.ofc-h{color:#141414}
+.ofc-h span+span{color:var(--g2)}
+.ofc-pill{color:#141414;border-color:rgba(20,20,20,.25)}
+.ofc-pill strong{color:#e5131d}
+.ofc-btn{background:#141414;color:#fff;box-shadow:0 .6cqw 1.6cqw rgba(0,0,0,.18)}
+.ofc-ring{background:radial-gradient(circle,rgba(255,255,255,.9),rgba(255,255,255,0) 62%)}
+.ofc-pod{background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.16),rgba(0,0,0,.05) 45%,transparent 70%);border-top:0}
+.ofc-pod::after{background:rgba(0,0,0,.28)}
+.ofc-img{filter:drop-shadow(0 1.6cqw 1.6cqw rgba(0,0,0,.22)) contrast(1.04) saturate(1.06)}
+.ofs:has(.ofc){background:#fff}
+.ofs:has(.ofc) .ofs-dots button::after{background:rgba(0,0,0,.2)}
+.ofs:has(.ofc) .ofs-dots button.on::after{background:#141414}
+@media (min-width:701px){.ofc-perks i{border-left-color:#e5131d;color:#333}}
+.gt{box-shadow:0 8px 24px rgba(0,0,0,.07)!important;border:1px solid rgba(0,0,0,.05)!important}
+.gt.gtc-purple{background:radial-gradient(70% 55% at 50% 35%,#fff,transparent 70%),linear-gradient(170deg,#ece6fb,#d9cff6)!important}
+.gt.gtc-teal{background:radial-gradient(70% 55% at 50% 35%,#fff,transparent 70%),linear-gradient(170deg,#e1f1f1,#c6e3e3)!important}
+.gt.gtc-red{background:radial-gradient(70% 55% at 50% 35%,#fff,transparent 70%),linear-gradient(170deg,#fde8e5,#f8cfca)!important}
+.gt b{color:#141414}
+.gt span::before{background:#e5131d}
+.gt i{background:#141414;color:#fff}
+.gt::after{background:radial-gradient(ellipse,rgba(0,0,0,.18),transparent 70%)}
+.gt img{filter:drop-shadow(0 14px 14px rgba(0,0,0,.2))}
