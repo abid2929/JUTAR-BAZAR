@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Dhaka');
 mb_internal_encoding('UTF-8');
 
 define('JB_ROOT', dirname(__DIR__));
-define('JB_VERSION', '2.7.2');
+define('JB_VERSION', '2.7.3');
 
 /** Private data folder: ~/jutarbazar-data (outside public_html) if possible, else ./data (blocked by .htaccess). */
 function jb_data_dir(): string {
@@ -81,6 +81,14 @@ function db(): PDO {
     if (!$pdo->query("SELECT 1 FROM settings WHERE k='mig_268'")->fetchColumn()) {
         $pdo->exec("UPDATE settings SET v='' WHERE k='notify_email' AND TRIM(v)=''");
         $pdo->exec("INSERT OR IGNORE INTO settings(k,v) VALUES('mig_268','1')");
+    }
+    // v2.7.3 (owner Nov 26): English tile names + sharper shoe photos. Changes only untouched old defaults, once.
+    if (!$pdo->query("SELECT 1 FROM settings WHERE k='mig_273'")->fetchColumn()) {
+        $u = $pdo->prepare("UPDATE settings SET v=? WHERE k=? AND v=?");
+        foreach (['ht1_img' => ['assets/img/demo/offer/ow-run.webp', 'assets/img/demo/offer/run-4.webp'], 'ht2_img' => ['assets/img/demo/offer/ow-snk.webp', 'assets/img/demo/offer/snk-5.webp'], 'ht3_img' => ['assets/img/demo/offer/lof-1.webp', 'assets/img/demo/offer/lof-4.webp'], 'of1_img' => ['assets/img/demo/offer/ow-run.webp', 'assets/img/demo/offer/run-4.webp'], 'of2_img' => ['assets/img/demo/offer/ow-snk.webp', 'assets/img/demo/offer/snk-5.webp'], 'of4_img' => ['assets/img/demo/offer/run-4.webp', 'assets/img/demo/offer/frm-5.webp'], 'of5_img' => ['assets/img/demo/offer/snk-5.webp', 'assets/img/demo/offer/snk-1.webp'], 'of7_img' => ['assets/img/demo/offer/lof-4.webp', 'assets/img/demo/offer/g-men.webp'], 'of8_img' => ['assets/img/demo/offer/run-4.webp', 'assets/img/demo/offer/run-5.webp']] as $k => $ab) $u->execute([$ab[1], $k, $ab[0]]);
+        $u->execute(['Running Shoes', 'ht1_en', 'Running']);
+        $u->execute(['Shop by Style', 'ht_title_en', 'Shop by style']);
+        $pdo->exec("INSERT OR IGNORE INTO settings(k,v) VALUES('mig_273','1')");
     }
     return $pdo;
 }
@@ -239,11 +247,11 @@ function jb_defaults(): array {
         'of1_theme' => 'purple',
         'ht_on' => '1',
         'ht_title' => 'কোনটা খুঁজছেন?',
-        'ht_title_en' => 'Shop by style',
-        'ht1_bn' => 'রানিং শু', 'ht1_en' => 'Running', 'ht1_link' => 'c/running', 'ht1_color' => 'purple', 'ht1_img' => 'assets/img/demo/offer/ow-run.webp',
-        'ht2_bn' => 'স্নিকার্স', 'ht2_en' => 'Sneakers', 'ht2_link' => 'c/sneakers', 'ht2_color' => 'teal', 'ht2_img' => 'assets/img/demo/offer/ow-snk.webp',
-        'ht3_bn' => 'ফ্যাশন', 'ht3_en' => 'Fashion', 'ht3_link' => 'c/fashion', 'ht3_color' => 'red', 'ht3_img' => 'assets/img/demo/offer/lof-1.webp',
-        'of1_img' => 'assets/img/demo/offer/ow-run.webp',
+        'ht_title_en' => 'Shop by Style',
+        'ht1_bn' => 'রানিং শু', 'ht1_en' => 'Running Shoes', 'ht1_link' => 'c/running', 'ht1_color' => 'purple', 'ht1_img' => 'assets/img/demo/offer/run-4.webp',
+        'ht2_bn' => 'স্নিকার্স', 'ht2_en' => 'Sneakers', 'ht2_link' => 'c/sneakers', 'ht2_color' => 'teal', 'ht2_img' => 'assets/img/demo/offer/snk-5.webp',
+        'ht3_bn' => 'ফ্যাশন', 'ht3_en' => 'Fashion', 'ht3_link' => 'c/fashion', 'ht3_color' => 'red', 'ht3_img' => 'assets/img/demo/offer/lof-4.webp',
+        'of1_img' => 'assets/img/demo/offer/run-4.webp',
         'of1_link' => 'c/running',
         'of2_on' => '1',
         'of2_l1' => 'SNEAKERS',
@@ -252,7 +260,7 @@ function jb_defaults(): array {
         'of2_big' => 'auto',
         'of2_end' => 'OFF',
         'of2_theme' => 'teal',
-        'of2_img' => 'assets/img/demo/offer/ow-snk.webp',
+        'of2_img' => 'assets/img/demo/offer/snk-5.webp',
         'of2_link' => 'c/sneakers',
         'of3_on' => '1',
         'of3_l1' => 'FASHION',
@@ -270,7 +278,7 @@ function jb_defaults(): array {
         'of4_big' => 'BD',
         'of4_end' => '',
         'of4_theme' => 'navy',
-        'of4_img' => 'assets/img/demo/offer/run-4.webp',
+        'of4_img' => 'assets/img/demo/offer/frm-5.webp',
         'of4_link' => 'shop',
         'of5_on' => '1',
         'of5_l1' => 'DHAKA',
@@ -279,7 +287,7 @@ function jb_defaults(): array {
         'of5_big' => '৳75',
         'of5_end' => '',
         'of5_theme' => 'green',
-        'of5_img' => 'assets/img/demo/offer/snk-5.webp',
+        'of5_img' => 'assets/img/demo/offer/snk-1.webp',
         'of5_link' => 'shop',
         'of6_on' => '1',
         'of6_l1' => 'EASY SIZE',
@@ -297,7 +305,7 @@ function jb_defaults(): array {
         'of7_big' => 'auto',
         'of7_end' => 'OFF!',
         'of7_theme' => 'maroon',
-        'of7_img' => 'assets/img/demo/offer/lof-4.webp',
+        'of7_img' => 'assets/img/demo/offer/g-men.webp',
         'of7_link' => 'c/fashion',
         'of8_on' => '0',
         'of8_l1' => 'RUNNING',
@@ -306,7 +314,7 @@ function jb_defaults(): array {
         'of8_big' => 'auto',
         'of8_end' => 'OFF!',
         'of8_theme' => 'navy',
-        'of8_img' => 'assets/img/demo/offer/run-4.webp',
+        'of8_img' => 'assets/img/demo/offer/run-5.webp',
         'of8_link' => 'c/running',
         'of9_on' => '0',
         'of9_l1' => 'SANDALS',

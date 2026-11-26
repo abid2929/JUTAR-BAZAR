@@ -87,12 +87,12 @@ function home(): void {
 <?php endif; ?>
 
 <?php if (S('ht_on') === '1'): /* v2.4.7: 3 big style tiles, editable in Admin > Settings > Home */ ?>
-<section class="gtiles" aria-label="<?= e(t(S('ht_title_en'), S('ht_title'))) ?>">
+<section class="gtiles" aria-label="<?= e(S('ht_title_en') ?: S('ht_title')) ?>">
   <div class="wrap">
-    <?php if (S('ht_title') !== '' || S('ht_title_en') !== ''): ?><h2><?= e(t(S('ht_title_en') ?: S('ht_title'), S('ht_title') ?: S('ht_title_en'))) ?></h2><?php endif; ?>
+    <?php if (S('ht_title') !== '' || S('ht_title_en') !== ''): ?><h2><?= e(S('ht_title_en') ?: S('ht_title')) ?></h2><?php endif; ?>
     <div class="gt-grid">
       <?php for ($i = 1; $i <= 3; $i++): $im = S("ht{$i}_img"); $hi = str_starts_with($im, 'assets/') ? url($im) : img_url($im); $lk = trim(S("ht{$i}_link"), '/ '); ?>
-      <a class="gt gtc-<?= e(S("ht{$i}_color") ?: 'red') ?>" href="<?= e(preg_match('~^https?://~', $lk) ? $lk : url($lk)) ?>"><img src="<?= e($hi) ?>"<?= srcset_attr($hi, '(max-width:700px) 33vw, 30vw', 800) ?> alt="" decoding="async" width="800" height="600"><span><b><?= e(t(S("ht{$i}_en") ?: S("ht{$i}_bn"), S("ht{$i}_bn") ?: S("ht{$i}_en"))) ?></b><i><?= t('Shop now', 'দেখুন') ?></i></span></a>
+      <a class="gt gtc-<?= e(S("ht{$i}_color") ?: 'red') ?>" href="<?= e(preg_match('~^https?://~', $lk) ? $lk : url($lk)) ?>"><img src="<?= e($hi) ?>"<?= srcset_attr($hi, '(max-width:700px) 33vw, 30vw', 800) ?> alt="" decoding="async" width="800" height="600"><span><b><?= e(S("ht{$i}_en") ?: S("ht{$i}_bn")) ?></b><i><?= 'Shop now' ?></i></span></a>
       <?php endfor; ?>
     </div>
   </div>
@@ -100,12 +100,12 @@ function home(): void {
 <?php endif; ?>
 
 <?php if (defined('JB_HOME_TILES') && JB_HOME_TILES): /* v2.4.5: owner removed 'Shop for' + 'Our Collections' tiles from the home page */ ?>
-<section class="gtiles" aria-label="<?= t('Shop for', 'কার জন্য') ?>">
+<section class="gtiles" aria-label="<?= 'Shop for' ?>">
   <div class="wrap">
     <h2><?= t('Shop for', 'কার জন্য কিনবেন') ?></h2>
     <div class="gt-grid">
       <?php foreach (['men' => 'm', 'women' => 'w', 'kids' => 'k'] as $gk => $gc): $gv = genders()[$gk]; ?>
-      <a class="gt <?= $gc ?>" href="<?= e(url($gk)) ?>"><img src="<?= e(url('assets/img/demo/offer/g-' . $gk . '.webp')) ?>"<?= srcset_attr(url('assets/img/demo/offer/g-' . $gk . '.webp'), '(max-width:700px) 33vw, 30vw', 800) ?> alt="" loading="lazy" decoding="async" width="800" height="600"><span><b><?= e(t($gv[0], $gv[1])) ?></b><i><?= t('Shop now', 'দেখুন') ?></i></span></a>
+      <a class="gt <?= $gc ?>" href="<?= e(url($gk)) ?>"><img src="<?= e(url('assets/img/demo/offer/g-' . $gk . '.webp')) ?>"<?= srcset_attr(url('assets/img/demo/offer/g-' . $gk . '.webp'), '(max-width:700px) 33vw, 30vw', 800) ?> alt="" loading="lazy" decoding="async" width="800" height="600"><span><b><?= e(t($gv[0], $gv[1])) ?></b><i><?= 'Shop now' ?></i></span></a>
       <?php endforeach; ?>
     </div>
   </div>
@@ -114,7 +114,7 @@ function home(): void {
 <?php if ($cols): ?>
 <section class="cols" id="collections" aria-label="Collections">
   <div class="wrap">
-    <div class="sec-head"><h2><small><?= t('Shop by collection', 'কালেকশন অনুযায়ী') ?></small><?= t('Our Collections', 'আমাদের কালেকশন') ?></h2><a href="<?= e(url('shop')) ?>" class="more"><?= t('View all', 'সব দেখুন') ?> <?= icon('arrow', 16) ?></a></div>
+    <div class="sec-head"><h2><small><?= 'Shop by collection' ?></small><?= 'Our Collections' ?></h2><a href="<?= e(url('shop')) ?>" class="more"><?= 'View all' ?> <?= icon('arrow', 16) ?></a></div>
     <div class="col-row">
       <?php $CUT = ['sneakers' => 'snk-3', 'running' => 'run-4', 'formal' => 'frm-2', 'loafers' => 'lof-3', 'sandals' => 'snd-2', 'fashion' => 'lof-3'];
       foreach ($cols as $ci => $c): $cut = (isset($CUT[$c['slug']]) && str_starts_with((string)$c['image'], 'assets/img/demo/')) ? 'assets/img/demo/offer/' . $CUT[$c['slug']] . '.webp' : ''; $cimg = $cut ? url($cut) : img_url($c['image']); ?>
@@ -132,7 +132,7 @@ function home(): void {
 <?php if ($featured): ?>
 <section class="sec">
   <div class="wrap">
-    <div class="sec-head"><h2><small><?= t('Trending now', 'এখন জনপ্রিয়') ?></small><?= t('Best Sellers', 'সবচেয়ে বেশি বিক্রি') ?></h2><a href="<?= e(url('shop')) ?>" class="more"><?= t('View all', 'সব দেখুন') ?> <?= icon('arrow', 16) ?></a></div>
+    <div class="sec-head"><h2><small><?= 'Trending now' ?></small><?= 'Best Sellers' ?></h2><a href="<?= e(url('shop')) ?>" class="more"><?= 'View all' ?> <?= icon('arrow', 16) ?></a></div>
     <div class="grid rail cap4"><?php foreach ($featured as $i => $p) echo product_card($p, $colName[$p['collection_id']] ?? '', $i < 2); ?></div>
   </div>
 </section>
@@ -145,7 +145,7 @@ foreach (jget('catalog_cols') as $cc): if (empty($cc['on']) || empty($cc['ids'])
   usort($cp, fn($a, $b) => array_search((int)$a['id'], $ids) <=> array_search((int)$b['id'], $ids)); ?>
 <section class="sec" id="cc-<?= e($cc['slug']) ?>">
   <div class="wrap">
-    <div class="sec-head"><h2><small><?= t('Collection', 'কালেকশন') ?></small><?= e(t(($cc['en'] ?? '') ?: $cc['name'], $cc['name'])) ?></h2></div>
+    <div class="sec-head"><h2><small><?= 'Collection' ?></small><?= e(t(($cc['en'] ?? '') ?: $cc['name'], $cc['name'])) ?></h2></div>
     <div class="grid rail cap4"><?php foreach ($cp as $p) echo product_card($p, $colName[$p['collection_id']] ?? ''); ?></div>
   </div>
 </section>
@@ -156,7 +156,7 @@ foreach (jget('catalog_cols') as $cc): if (empty($cc['on']) || empty($cc['ids'])
   <div class="wrap col-in">
     <a class="col-banner" href="<?= e(url('c/' . $c['slug'])) ?>">
       <img src="<?= e(img_url($c['image'])) ?>"<?= srcset_attr(img_url($c['image']), '(max-width:700px) 45vw, 380px', 800) ?> alt="<?= e(col_name($c)) ?>" loading="lazy" decoding="async" width="800" height="1000">
-      <span class="col-banner-txt"><small><?= bn_num(str_pad((string)$n, 2, '0', STR_PAD_LEFT)) ?> / <?= t('Collection', 'কালেকশন') ?></small><h2><?= e($c['name_en'] ?: $c['name']) ?></h2><?php if (col_tag($c)): ?><p><?= e(col_tag($c)) ?></p><?php endif; ?><i class="more"><?= is_bn() ? e(col_name($c)) . ' দেখুন' : 'Shop ' . e(col_name($c)) ?> <?= icon('arrow', 16) ?></i></span>
+      <span class="col-banner-txt"><small><?= bn_num(str_pad((string)$n, 2, '0', STR_PAD_LEFT)) ?> / <?= t('Collection', 'কালেকশন') ?></small><h2><?= e($c['name_en'] ?: $c['name']) ?></h2><?php if (col_tag($c)): ?><p><?= e(col_tag($c)) ?></p><?php endif; ?><i class="more"><?= 'Shop ' . e($c['name_en'] ?: $c['name']) ?> <?= icon('arrow', 16) ?></i></span>
     </a>
     <div class="grid rail cap4"><?php foreach ($byCol[$c['id']] as $p) echo product_card($p, col_name($c)); ?><?php if (count($byCol[$c['id']]) < 4): ?><a class="card more-tile" href="<?= e(url('c/' . $c['slug'])) ?>"><span><small><?= t('Explore', 'দেখুন') ?></small><b><?= is_bn() ? e(col_name($c)) : 'All ' . e($c['name_en'] ?: $c['name']) ?></b><i><?= icon('arrow', 22) ?></i></span></a><?php endif; ?></div>
   </div>
@@ -165,21 +165,21 @@ foreach (jget('catalog_cols') as $cc): if (empty($cc['on']) || empty($cc['ids'])
 <section class="promo">
   <img class="promo-bg" src="<?= e($pimg = ($s['promo_image'] ? img_url($s['promo_image']) : url('assets/img/demo/real/frm-3.webp'))) ?>"<?= srcset_attr($pimg, '(max-width:700px) 100vw, 50vw', 800) ?> alt="" loading="lazy" decoding="async" width="800" height="800">
   <div class="wrap promo-in">
-    <div><small><?= t('Special offer', 'বিশেষ অফার') ?></small><h2><?= e(SL('promo_title')) ?></h2><p><?= e(SL('promo_sub')) ?></p></div>
+    <div><small><?= 'Special offer' ?></small><h2><?= e(SL('promo_title')) ?></h2><p><?= e(SL('promo_sub')) ?></p></div>
     <a class="btn btn-line" href="<?= e(url('shop')) ?>"><?= e(SL('promo_btn')) ?> <?= icon('arrow', 18) ?></a>
   </div>
 </section>
 <?php endif; endforeach; ?>
 
 <section class="sec" id="recent" hidden><div class="wrap">
-  <div class="sec-head"><h2><small><?= t('Your history', 'আপনার দেখা') ?></small><?= t('Recently viewed', 'সম্প্রতি দেখেছেন') ?></h2></div>
+  <div class="sec-head"><h2><small><?= 'Your history' ?></small><?= 'Recently viewed' ?></h2></div>
   <div class="grid rail" id="recent-grid"></div>
 </div></section>
 
 <?php $revs = array_values(array_filter(jget('reviews'), fn($r) => !empty($r['on']))); if ($revs): /* v2.5: customer reviews from Admin > Customer Reviews */ ?>
 <section class="sec revs">
   <div class="wrap">
-    <div class="sec-head"><h2><small><?= t('Happy customers', 'খুশি কাস্টমার') ?></small><?= t('What our customers say', 'কাস্টমাররা যা বলছেন') ?></h2></div>
+    <div class="sec-head"><h2><small><?= 'Happy customers' ?></small><?= 'What our customers say' ?></h2></div>
     <div class="rev-row">
       <?php foreach (array_slice($revs, 0, 12) as $r): ?>
       <figure class="rev"><div class="rev-st" aria-label="<?= (int)$r['stars'] ?>/5"><?= str_repeat('★', (int)$r['stars']) ?><span><?= str_repeat('★', 5 - (int)$r['stars']) ?></span></div>
