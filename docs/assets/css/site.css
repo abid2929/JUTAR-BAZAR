@@ -1256,3 +1256,70 @@ html:not(.lang-bn) .sec-head h2 small{letter-spacing:.14em;text-transform:upperc
 .gt img{filter:drop-shadow(0 16px 18px rgba(0,0,0,.4)) contrast(1.04)}
 @media(max-width:700px){.gt b{font-size:15px;white-space:nowrap}}
 @media(max-width:370px){.gt b{font-size:13px}}
+/* v2.7.4 more premium (owner Nov 26): black + champagne gold, spotlight, cleaner text */
+.of.ofc{--gold1:#f3dfb0;--gold2:#c9a55c;background:radial-gradient(42% 70% at 74% 0%,rgba(255,255,255,.16),transparent 70%),radial-gradient(50% 80% at 74% 60%,color-mix(in srgb,var(--g1) 45%,transparent),transparent 70%),linear-gradient(100deg,#09090a 0%,#0e0e10 45%,color-mix(in srgb,var(--g2) 55%,#09090a) 100%)}
+.of.ofc::after{background:linear-gradient(90deg,rgba(0,0,0,.45),transparent 50%),linear-gradient(0deg,rgba(0,0,0,.35),transparent 30%)}
+.of.ofc::before{all:unset;content:"";position:absolute;inset:1.1cqw;border:1px solid rgba(201,165,92,.28);border-radius:.4cqw;pointer-events:none;z-index:3}
+.ofc-k{color:var(--gold2);letter-spacing:.34em;font-weight:500}
+.ofc-h{font-size:5cqw;line-height:1.02}
+.ofc-h span+span{-webkit-text-stroke:0;color:transparent;background:linear-gradient(180deg,var(--gold1),var(--gold2) 70%,#a8823c);-webkit-background-clip:text;background-clip:text}
+.ofc-pill{border:0;border-top:1px solid rgba(201,165,92,.55);border-bottom:1px solid rgba(201,165,92,.55);border-radius:0;padding:.45cqw .2cqw;background:none}
+.ofc-pill strong{background:linear-gradient(180deg,var(--gold1),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.ofc-btn{background:linear-gradient(180deg,var(--gold1),var(--gold2));color:#141008;font-weight:600;letter-spacing:.04em;box-shadow:0 .5cqw 1.6cqw rgba(201,165,92,.25)}
+.ofc-ghost{display:none!important}
+.ofc-ring{background:radial-gradient(circle,rgba(255,255,255,.14),rgba(255,255,255,0) 62%)}
+.ofc-pod{background:radial-gradient(ellipse at 50% 40%,rgba(243,223,176,.28),rgba(201,165,92,.08) 50%,transparent 72%);box-shadow:none;border-top:1px solid rgba(243,223,176,.25)}
+.ofs:has(.ofc) .ofs-dots button.on::after{background:var(--gold2,#c9a55c)}
+@media (min-width:701px){
+  .ofc-perks i{background:none;border:0;border-left:1px solid rgba(201,165,92,.6);border-radius:0;padding:.2cqw 0 .2cqw 1.2cqw;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.85);backdrop-filter:none;-webkit-backdrop-filter:none}
+  .ofc-perks i::before{content:none}
+  .ofc-perks{gap:1.1cqw;left:36%}
+}
+@media (max-width:700px){
+  .of.ofc{aspect-ratio:1.5/1}
+  .of.ofc::before{inset:2.2cqw;border-radius:1cqw}
+  .ofc-txt{top:46%;left:7%}
+  .ofc-h{font-size:9cqw}
+  .ofc-pill{padding:.8cqw .3cqw}
+  .ofc-btn{padding:1.7cqw 4.2cqw}
+  .ofs:has(.ofc) .ofs-dots{bottom:3.6cqw;left:auto;right:7%;transform:none}
+}
+/* v2.7.4 tiles: one black-gold card style, label under the shoe */
+.gt{background:radial-gradient(70% 55% at 50% 30%,rgba(255,255,255,.12),transparent 70%),linear-gradient(175deg,#1a1a1d,#0a0a0b)!important;border:1px solid rgba(201,165,92,.3);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.gt.gtc-purple{background:radial-gradient(70% 55% at 50% 32%,rgba(138,106,240,.45),transparent 70%),linear-gradient(175deg,#18161f,#09090b)!important}
+.gt.gtc-teal{background:radial-gradient(70% 55% at 50% 32%,rgba(29,138,144,.45),transparent 70%),linear-gradient(175deg,#131a1b,#09090b)!important}
+.gt.gtc-red{background:radial-gradient(70% 55% at 50% 32%,rgba(255,90,82,.4),transparent 70%),linear-gradient(175deg,#1d1414,#09090b)!important}
+.gt img{inset:5% 6% 26%;width:88%;height:69%}
+.gt span{left:0;right:0;bottom:0;padding:12px 10px 16px;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
+.gt span::before{content:"";width:28px;height:1px;background:#c9a55c;order:2}
+.gt b{font:500 clamp(15px,1.6vw,22px)/1.15 'Jost',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#f3dfb0;order:1}
+.gt i{order:3;background:none;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.25);font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px}
+.gt::after{bottom:27%}
+@media(max-width:700px){
+  .gt{border-radius:14px}
+  .gt b{font-size:11px!important;letter-spacing:.1em;white-space:normal}
+  .gt span{padding:8px 4px 11px;gap:6px}
+  .gt span::before{width:20px}
+  .gt img{inset:6% 6% 28%;height:64%}
+}
+.lang-bn .gtiles b{line-height:1.2!important}
+/* v2.7.5 (owner Nov 26): no dark look, bright colours again, keep the clean premium details */
+.of.ofc{background:radial-gradient(45% 75% at 74% 30%,rgba(255,255,255,.3),transparent 70%),linear-gradient(115deg,var(--g1) 0%,var(--g2) 100%)}
+.of.ofc::after{background:linear-gradient(90deg,rgba(0,0,0,.12),transparent 50%)}
+.of.ofc::before{border-color:rgba(255,255,255,.4)}
+.ofc-k{color:#fff;opacity:.9}
+.ofc-h span+span{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#ffe7b3}
+.ofc-pill{border-color:rgba(255,255,255,.6)}
+.ofc-pill strong{background:none;color:#ffe7b3}
+.ofc-btn{background:#fff;color:#111;box-shadow:0 .6cqw 1.6cqw rgba(0,0,0,.22)}
+.ofc-pod{background:radial-gradient(ellipse at 50% 40%,rgba(255,255,255,.4),rgba(255,255,255,.08) 55%,transparent 72%);border-top-color:rgba(255,255,255,.35)}
+.ofs:has(.ofc){background:#fff}
+.ofs:has(.ofc) .ofs-dots button.on::after{background:#fff}
+@media (min-width:701px){.ofc-perks i{border-left-color:rgba(255,255,255,.7);color:#fff}}
+.gt{border:0!important;box-shadow:0 10px 26px rgba(0,0,0,.14)}
+.gt.gtc-purple{background:radial-gradient(70% 55% at 50% 32%,rgba(255,255,255,.28),transparent 70%),linear-gradient(165deg,#8a6af0,#3d2399)!important}
+.gt.gtc-teal{background:radial-gradient(70% 55% at 50% 32%,rgba(255,255,255,.26),transparent 70%),linear-gradient(165deg,#1f8f95,#0b4448)!important}
+.gt.gtc-red{background:radial-gradient(70% 55% at 50% 32%,rgba(255,255,255,.26),transparent 70%),linear-gradient(165deg,#ff6258,#b30e17)!important}
+.gt b{color:#fff;font-weight:600}
+.gt span::before{background:rgba(255,255,255,.8)}
+.gt i{background:#fff;color:#111;border:0;font-weight:600}

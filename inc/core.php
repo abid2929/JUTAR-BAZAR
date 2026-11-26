@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Dhaka');
 mb_internal_encoding('UTF-8');
 
 define('JB_ROOT', dirname(__DIR__));
-define('JB_VERSION', '2.7.4');
+define('JB_VERSION', '2.7.5');
 
 /** Private data folder: ~/jutarbazar-data (outside public_html) if possible, else ./data (blocked by .htaccess). */
 function jb_data_dir(): string {
@@ -89,6 +89,14 @@ function db(): PDO {
         $u->execute(['Running Shoes', 'ht1_en', 'Running']);
         $u->execute(['Shop by Style', 'ht_title_en', 'Shop by style']);
         $pdo->exec("INSERT OR IGNORE INTO settings(k,v) VALUES('mig_273','1')");
+    }
+    // v2.7.5 (owner Nov 26): different sneaker photo (no plain white one). Only untouched defaults, once.
+    if (!$pdo->query("SELECT 1 FROM settings WHERE k='mig_275'")->fetchColumn()) {
+        $u = $pdo->prepare("UPDATE settings SET v=? WHERE k=? AND v IN (?,?)");
+        $u->execute(['assets/img/demo/offer/snk-1.webp', 'ht2_img', 'assets/img/demo/offer/snk-5.webp', 'assets/img/demo/offer/ow-snk.webp']);
+        $u->execute(['assets/img/demo/offer/snk-1.webp', 'of2_img', 'assets/img/demo/offer/snk-5.webp', 'assets/img/demo/offer/ow-snk.webp']);
+        $u->execute(['assets/img/demo/offer/snk-4.webp', 'of5_img', 'assets/img/demo/offer/snk-1.webp', 'assets/img/demo/offer/snk-5.webp']);
+        $pdo->exec("INSERT OR IGNORE INTO settings(k,v) VALUES('mig_275','1')");
     }
     return $pdo;
 }
@@ -249,7 +257,7 @@ function jb_defaults(): array {
         'ht_title' => 'কোনটা খুঁজছেন?',
         'ht_title_en' => 'Shop by Style',
         'ht1_bn' => 'রানিং শু', 'ht1_en' => 'Running Shoes', 'ht1_link' => 'c/running', 'ht1_color' => 'purple', 'ht1_img' => 'assets/img/demo/offer/run-4.webp',
-        'ht2_bn' => 'স্নিকার্স', 'ht2_en' => 'Sneakers', 'ht2_link' => 'c/sneakers', 'ht2_color' => 'teal', 'ht2_img' => 'assets/img/demo/offer/snk-5.webp',
+        'ht2_bn' => 'স্নিকার্স', 'ht2_en' => 'Sneakers', 'ht2_link' => 'c/sneakers', 'ht2_color' => 'teal', 'ht2_img' => 'assets/img/demo/offer/snk-1.webp',
         'ht3_bn' => 'ফ্যাশন', 'ht3_en' => 'Fashion', 'ht3_link' => 'c/fashion', 'ht3_color' => 'red', 'ht3_img' => 'assets/img/demo/offer/lof-4.webp',
         'of1_img' => 'assets/img/demo/offer/run-4.webp',
         'of1_link' => 'c/running',
@@ -260,7 +268,7 @@ function jb_defaults(): array {
         'of2_big' => 'auto',
         'of2_end' => 'OFF',
         'of2_theme' => 'teal',
-        'of2_img' => 'assets/img/demo/offer/snk-5.webp',
+        'of2_img' => 'assets/img/demo/offer/snk-1.webp',
         'of2_link' => 'c/sneakers',
         'of3_on' => '1',
         'of3_l1' => 'FASHION',
@@ -287,7 +295,7 @@ function jb_defaults(): array {
         'of5_big' => '৳75',
         'of5_end' => '',
         'of5_theme' => 'green',
-        'of5_img' => 'assets/img/demo/offer/snk-1.webp',
+        'of5_img' => 'assets/img/demo/offer/snk-4.webp',
         'of5_link' => 'shop',
         'of6_on' => '1',
         'of6_l1' => 'EASY SIZE',
