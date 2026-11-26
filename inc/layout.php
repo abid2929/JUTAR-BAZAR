@@ -45,6 +45,14 @@ function logo_html(): string {
     return logo_mark() . '<span class="logo-txt"><b><i>' . e($w[0]) . '</i>' . ($rest !== '' ? ' ' . e($rest) : '') . $bd . '</b><small>Footwear</small><em class="logo-bn" lang="bn">জুতার বাজার বিডি</em></span>';
 }
 
+// v2.7.1 speed: start downloading the first big photo (LCP) together with the CSS
+function lcp_preload(string $html): void {
+    if (!preg_match('~<img[^>]*?\ssrc="([^"]+)"([^>]*)>~', $html, $m)) return;
+    $l = '<link rel="preload" as="image" href="' . $m[1] . '" fetchpriority="high"';
+    if (preg_match('~\ssrcset="([^"]+)"~', $m[2], $x)) $l .= ' imagesrcset="' . $x[1] . '"';
+    if (preg_match('~\ssizes="([^"]+)"~', $m[2], $x)) $l .= ' imagesizes="' . $x[1] . '"';
+    $GLOBALS['jb_lcp'] = $l . '>';
+}
 function page_head(string $title = '', string $desc = '', string $ogImg = ''): void {
     $s = settings();
     $brand = is_bn() ? $s['shop_name'] : $s['shop_name_en'];
@@ -79,9 +87,9 @@ function page_head(string $title = '', string $desc = '', string $ogImg = ''): v
 <?php if ($ogImg): ?><meta property="og:image" content="<?= e($ogImg) ?>"><?php endif; ?>
 <?php if (S('logo')): ?><link rel="icon" href="<?= e(img_url(S('logo'))) ?>"><?php else: ?><link rel="icon" type="image/png" sizes="48x48" href="<?= e(url('assets/img/favicon-48.png') . '?v=270') ?>"><link rel="icon" type="image/png" sizes="192x192" href="<?= e(url('assets/img/favicon-192.png')) ?>"><?php endif; ?>
 <link rel="apple-touch-icon" href="<?= e(url('assets/img/apple-touch-icon.png') . '?v=270') ?>"><link rel="manifest" href="<?= e(url('site.webmanifest')) ?>">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Jost:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="<?= e(url('assets/css/site.css')) ?>?v=<?= JB_VERSION ?>">
+<?= $GLOBALS['jb_lcp'] ?? '' ?><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Jost:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="<?= e(url(is_file(JB_ROOT . '/assets/css/site.min.css') ? 'assets/css/site.min.css' : 'assets/css/site.css')) ?>?v=<?= JB_VERSION ?>">
 <style>:root{--accent:<?= e($acc) ?>}</style>
 <?php if ($s['pixel_id']): ?><script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','<?= e($s['pixel_id']) ?>');fbq('track','PageView');</script><?php endif; ?>
 <?php if ($s['ga_id']): ?><script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($s['ga_id']) ?>"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','<?= e($s['ga_id']) ?>');</script><?php endif; ?>
@@ -186,7 +194,7 @@ function page_foot(): void {
   <a class="tb-wa" href="https://wa.me/<?= e($wa) ?>" target="_blank" rel="noopener"><i><?= icon('wa', 22) ?></i><span>WhatsApp</span></a>
 </nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script src="<?= e(url('assets/js/site.js')) ?>?v=<?= JB_VERSION ?>" defer></script>
+<script src="<?= e(url(is_file(JB_ROOT . '/assets/js/site.min.js') ? 'assets/js/site.min.js' : 'assets/js/site.js')) ?>?v=<?= JB_VERSION ?>" defer></script>
 </body>
 </html>
 <?php

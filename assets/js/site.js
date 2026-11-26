@@ -65,7 +65,7 @@ if(buy){
   (function(){
     if(!gm)return;var ims=[].slice.call(gm.querySelectorAll('img'));if(!ims.length)return;
     var st=gm.parentNode,lens=st.querySelector('.g-lens'),th=[].slice.call(document.querySelectorAll('[data-goto]'));
-    var src=function(i){return ims[i].currentSrc||ims[i].src};
+    var src=function(i){return ims[i].src};
     var cur=function(){return Math.max(0,Math.min(ims.length-1,Math.round(gm.scrollLeft/(gm.clientWidth||1))))};
     gm.addEventListener('scroll',function(){var c=cur();th.forEach(function(x,k){x.classList.toggle('on',k===c)})},{passive:true});
     var fine=window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine) and (min-width:900px)').matches;
@@ -124,7 +124,7 @@ if(buy){
   })();
   /* sticky buy bar on phone */
   var sb=document.querySelector('.sticky-buy');
-  if(sb&&'IntersectionObserver' in window){new IntersectionObserver(function(es){sb.classList.toggle('on',!es[0].isIntersecting&&es[0].boundingClientRect.top<0)}).observe(buy.querySelector('.buy-btns')||buy)}
+  if(sb&&'IntersectionObserver' in window){new IntersectionObserver(function(es){var v=!es[0].isIntersecting&&es[0].boundingClientRect.top<0;sb.classList.toggle('on',v);document.body.classList.toggle('sb-on',v)}).observe(buy.querySelector('.buy-btns')||buy)}
   var sbb=document.querySelector('[data-scroll-buy]');if(sbb)sbb.addEventListener('click',function(){buy.scrollIntoView({behavior:'smooth',block:'center'})});
 }
 

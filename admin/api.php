@@ -440,7 +440,7 @@ if ($a === 'backup') {
   $z = new ZipArchive(); $z->open($tmp, ZipArchive::OVERWRITE); $z->addFile($snap, 'shop.sqlite');
   if (is_dir(JB_ROOT . '/uploads')) foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator(JB_ROOT . '/uploads', FilesystemIterator::SKIP_DOTS)) as $f) if ($f->isFile()) $z->addFile($f->getPathname(), 'uploads/' . substr($f->getPathname(), strlen(JB_ROOT . '/uploads/')));
   $z->close(); @unlink($snap);
-  header('Content-Type: application/zip'); header('Content-Disposition: attachment; filename="jutarbazar-backup-' . date('Y-m-d') . '.zip"'); header('Content-Length: ' . filesize($tmp));
+  @ini_set('zlib.output_compression', '0'); header('Content-Type: application/zip'); header('Content-Disposition: attachment; filename="jutarbazar-backup-' . date('Y-m-d') . '.zip"'); header('Content-Length: ' . filesize($tmp));
   readfile($tmp); @unlink($tmp); exit;
 }
 out(['error' => 'Unknown action'], 404);

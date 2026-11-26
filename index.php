@@ -56,10 +56,11 @@ function home(): void {
     if (!$featured) $featured = db()->query('SELECT * FROM products WHERE active=1 ORDER BY id DESC LIMIT 8')->fetchAll();
     $heroImg = $s['hero_image'] ? img_url($s['hero_image']) : url('assets/img/demo/hero-full.webp');
     $spot = $featured[0] ?? null;
+    $ofsHome = offer_slider(); lcp_preload($ofsHome);
     page_head('', '', $s['hero_image'] ? full_url(ltrim(parse_url($heroImg, PHP_URL_PATH) ?: '', '/')) : '');
     ?>
 <h1 class="sr-only"><?= e(is_bn() ? $s['shop_name'] : $s['shop_name_en']) ?> · <?= e(SL('hero_title')) ?></h1>
-<?= offer_slider() ?>
+<?= $ofsHome ?>
 <?php if (S('hero_on') === '1'): ?>
 <section class="hx">
   <picture>
@@ -154,7 +155,7 @@ foreach (jget('catalog_cols') as $cc): if (empty($cc['on']) || empty($cc['ids'])
 <section class="sec col-sec<?= $n % 2 === 0 ? ' flip' : '' ?>" id="col-<?= e($c['slug']) ?>">
   <div class="wrap col-in">
     <a class="col-banner" href="<?= e(url('c/' . $c['slug'])) ?>">
-      <img src="<?= e(img_url($c['image'])) ?>" alt="<?= e(col_name($c)) ?>" loading="lazy" width="800" height="1000">
+      <img src="<?= e(img_url($c['image'])) ?>"<?= srcset_attr(img_url($c['image']), '(max-width:700px) 45vw, 380px', 800) ?> alt="<?= e(col_name($c)) ?>" loading="lazy" decoding="async" width="800" height="1000">
       <span class="col-banner-txt"><small><?= bn_num(str_pad((string)$n, 2, '0', STR_PAD_LEFT)) ?> / <?= t('Collection', 'কালেকশন') ?></small><h2><?= e($c['name_en'] ?: $c['name']) ?></h2><?php if (col_tag($c)): ?><p><?= e(col_tag($c)) ?></p><?php endif; ?><i class="more"><?= is_bn() ? e(col_name($c)) . ' দেখুন' : 'Shop ' . e(col_name($c)) ?> <?= icon('arrow', 16) ?></i></span>
     </a>
     <div class="grid rail cap4"><?php foreach ($byCol[$c['id']] as $p) echo product_card($p, col_name($c)); ?><?php if (count($byCol[$c['id']]) < 4): ?><a class="card more-tile" href="<?= e(url('c/' . $c['slug'])) ?>"><span><small><?= t('Explore', 'দেখুন') ?></small><b><?= is_bn() ? e(col_name($c)) : 'All ' . e($c['name_en'] ?: $c['name']) ?></b><i><?= icon('arrow', 22) ?></i></span></a><?php endif; ?></div>
@@ -162,7 +163,7 @@ foreach (jget('catalog_cols') as $cc): if (empty($cc['on']) || empty($cc['ids'])
 </section>
 <?php if ($n === 2 && trim(SL('promo_title'))): ?>
 <section class="promo">
-  <img class="promo-bg" src="<?= e($s['promo_image'] ? img_url($s['promo_image']) : url('assets/img/demo/real/frm-3.webp')) ?>" alt="" loading="lazy" width="800" height="800">
+  <img class="promo-bg" src="<?= e($pimg = ($s['promo_image'] ? img_url($s['promo_image']) : url('assets/img/demo/real/frm-3.webp'))) ?>"<?= srcset_attr($pimg, '(max-width:700px) 100vw, 50vw', 800) ?> alt="" loading="lazy" decoding="async" width="800" height="800">
   <div class="wrap promo-in">
     <div><small><?= t('Special offer', 'বিশেষ অফার') ?></small><h2><?= e(SL('promo_title')) ?></h2><p><?= e(SL('promo_sub')) ?></p></div>
     <a class="btn btn-line" href="<?= e(url('shop')) ?>"><?= e(SL('promo_btn')) ?> <?= icon('arrow', 18) ?></a>
@@ -225,6 +226,7 @@ function shop(string $slug = '', string $gender = ''): void {
     $items = $st->fetchAll();
     $title = $col ? col_name($col) : ($gn ? t($gn[0] . "'s Shoes", $gn[1] . ' জুতা') : ($q !== '' ? t("Results for \"$q\"", "\"$q\" এর ফলাফল") : t('All Shoes', 'সব জুতা')));
     if ($gender === 'kids') $title = t("Kids' Shoes", 'বাচ্চাদের জুতা'); elseif ($gender === 'women') $title = t("Women's Shoes", 'মেয়েদের জুতা');
+    $ofsList = offer_slider($col ? $col['slug'] : '', $col ? '' : $gender); lcp_preload($ofsList);
     page_head($title, $col ? col_tag($col) : ($gn ? t('Shop ' . ['men' => "men's", 'women' => "women's", 'kids' => "kids'"][$gender] . ' shoes online at ' . S('shop_name_en') . ': sneakers, sandals, loafers and more. Cash on delivery all over Bangladesh.', $gn[1] . ' জুতা অনলাইনে কিনুন ' . S('shop_name') . '-এ: স্নিকার্স, স্যান্ডেল, লোফার আর আরও অনেক কিছু। সারা দেশে ক্যাশ অন ডেলিভারি।') : ''));
     $base = $col ? url('c/' . $col['slug']) : ($gn ? url($gender) : url('shop'));
     ?>
@@ -232,7 +234,7 @@ function shop(string $slug = '', string $gender = ''): void {
   $sortOpts = ['new' => t('Featured', 'বাছাই করা'), 'low' => t('Price: low to high', 'দাম: কম থেকে বেশি'), 'high' => t('Price: high to low', 'দাম: বেশি থেকে কম'), 'off' => t('Biggest discount', 'সবচেয়ে বেশি ছাড়')];
   $keep = function (array $set) use ($q, $sort, $size, $base) { $v = array_filter(array_merge(['q' => $q, 'sort' => $sort === 'new' ? '' : $sort, 'size' => $size], $set), fn($x) => $x !== '' && $x !== null); return $base . ($v ? '?' . http_build_query($v) : ''); }; ?>
 <div class="wrap lx-crumbs"><nav class="crumbs" aria-label="Breadcrumb"><a href="<?= e(url()) ?>"><?= t('Home', 'হোম') ?></a> / <?= $col ? '<a href="' . e(url('shop')) . '">' . t('All Shoes', 'সব জুতা') . '</a> / ' : '' ?><span><?= e($title) ?></span></nav></div>
-<?php $ofs = offer_slider($col ? $col['slug'] : '', $col ? '' : $gender); if ($ofs): echo $ofs; else: ?>
+<?php $ofs = $ofsList; if ($ofs): echo $ofs; else: ?>
 <section class="lx-banner">
   <img src="<?= e($bimg) ?>" alt="<?= e($title) ?>" width="1600" height="600" fetchpriority="high">
   <div class="lx-bt">
@@ -314,6 +316,7 @@ function product(string $slug): void {
     $rel = db()->prepare('SELECT * FROM products WHERE active=1 AND collection_id=? AND id<>? ORDER BY featured DESC, RANDOM() LIMIT 4');
     $rel->execute([$p['collection_id'], $p['id']]);
     $related = $rel->fetchAll();
+    $im0 = p_first_image($p); lcp_preload('<img src="' . e($im0) . '"' . srcset_attr($im0, '(max-width:899px) 100vw, 600px', 1600) . '>');
     page_head($p['name'] . ($p['cname'] ? ' | ' . $p['cname'] : ''), p_short($p), og_url(p_first_image($p)));
     $pdata = ['id' => (int)$p['id'], 'name' => $p['name'], 'price' => (int)$p['price'], 'img' => p_first_image($p), 'slug' => $p['slug'], 'stock' => (int)$p['stock']];
     ?>
@@ -324,13 +327,13 @@ function product(string $slug): void {
     <div class="gallery<?= count($imgs) > 1 ? ' multi' : '' ?>"<?= array_filter($gcol) ? ' data-gcol="' . e(json_encode(array_values($gcol), JSON_UNESCAPED_UNICODE)) . '"' : '' ?>>
       <div class="g-stage">
       <div class="g-main" id="gmain">
-        <?php foreach ($imgs as $i => $im): ?><img src="<?= e(img_url($im)) ?>" alt="<?= e($p['name']) ?> <?= t('photo', 'ছবি') ?> <?= $i + 1 ?>" width="800" height="800" <?= $i ? 'loading="lazy"' : 'fetchpriority="high"' ?>><?php endforeach; ?>
+        <?php foreach ($imgs as $i => $im): ?><img src="<?= e(img_url($im)) ?>"<?= srcset_attr(img_url($im), '(max-width:899px) 100vw, 600px', 1600) ?> alt="<?= e($p['name']) ?> <?= t('photo', 'ছবি') ?> <?= $i + 1 ?>" width="800" height="800" <?= $i ? 'loading="lazy"' : 'fetchpriority="high"' ?>><?php endforeach; ?>
       </div>
       <i class="g-lens" aria-hidden="true"></i>
       <button type="button" class="g-zhint" data-zoom aria-label="<?= t('Zoom photo', 'ছবি বড় করে দেখুন') ?>"><?= icon('search', 16) ?><span><?= t('Zoom', 'জুম') ?></span></button>
       </div>
       <?php if (count($imgs) > 1): ?>
-      <div class="g-thumbs"><?php foreach ($imgs as $i => $im): ?><button data-goto="<?= $i ?>" class="<?= $i ? '' : 'on' ?>" aria-label="<?= t('Photo', 'ছবি') ?> <?= $i + 1 ?>"><img src="<?= e(img_url($im)) ?>" alt="" loading="lazy" width="120" height="120"></button><?php endforeach; ?></div>
+      <div class="g-thumbs"><?php foreach ($imgs as $i => $im): ?><button data-goto="<?= $i ?>" class="<?= $i ? '' : 'on' ?>" aria-label="<?= t('Photo', 'ছবি') ?> <?= $i + 1 ?>"><img src="<?= e(img_url($im)) ?>"<?= srcset_attr(img_url($im), '80px', 1600) ?> alt="" loading="lazy" decoding="async" width="120" height="120"></button><?php endforeach; ?></div>
       <?php endif; ?>
     </div>
     <div class="pd-info">

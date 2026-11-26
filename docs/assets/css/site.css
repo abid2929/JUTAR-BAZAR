@@ -1189,7 +1189,7 @@ html:not(.lang-bn) .sec-head h2 small{letter-spacing:.14em;text-transform:upperc
 .zb-img[src*="uploads/"]{padding:0;mix-blend-mode:normal}
 .g-lens.ph{background-blend-mode:normal;background-size:220%}
 .badges .b-new{background:#fff!important}
-@media (max-width:899px){body:has(.sticky-buy.on) .toast{bottom:calc(150px + env(safe-area-inset-bottom,0px))}}
+@media (max-width:899px){body.sb-on .toast{bottom:calc(150px + env(safe-area-inset-bottom,0px))}}
 .toast{max-width:calc(100vw - 32px);text-align:center;z-index:310}
 /* v2.6.10 phone tab bar: room for the iPhone home line, nothing pokes above the top line */
 .tabbar{box-sizing:content-box;height:60px;padding-bottom:env(safe-area-inset-bottom,0px)}
