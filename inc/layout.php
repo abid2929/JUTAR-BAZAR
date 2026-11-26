@@ -42,7 +42,7 @@ function logo_html(): string {
     $nm = S('shop_name_en') ?: S('shop_name'); $w = preg_split('/\s+/', trim($nm), 2);
     $rest = $w[1] ?? ''; $bd = '';
     if (preg_match('/^(.*?)\s*\bBD$/i', $rest, $m)) { $rest = $m[1]; $bd = '<sup class="logo-bd">BD</sup>'; }
-    return logo_mark() . '<span class="logo-txt"><b><i>' . e($w[0]) . '</i>' . ($rest !== '' ? ' ' . e($rest) : '') . $bd . '</b><small>Footwear</small><em class="logo-bn" lang="bn">জুতার বাজার বিডি</em></span>';
+    return logo_mark() . '<span class="logo-txt"><b><i>' . e($w[0]) . '</i>' . ($rest !== '' ? ' ' . e($rest) : '') . $bd . '</b><em class="logo-bn" lang="bn">জুতার বাজার বিডি</em></span>';
 }
 
 // v2.7.1 speed: start downloading the first big photo (LCP) together with the CSS
@@ -85,7 +85,7 @@ function page_head(string $title = '', string $desc = '', string $ogImg = ''): v
 <meta property="og:description" content="<?= e(mb_substr($desc, 0, 200)) ?>">
 <meta property="og:type" content="website">
 <?php if ($ogImg): ?><meta property="og:image" content="<?= e($ogImg) ?>"><?php endif; ?>
-<?php if (S('logo')): ?><link rel="icon" href="<?= e(img_url(S('logo'))) ?>"><?php else: ?><link rel="icon" type="image/png" sizes="48x48" href="<?= e(url('assets/img/favicon-48.png') . '?v=270') ?>"><link rel="icon" type="image/png" sizes="192x192" href="<?= e(url('assets/img/favicon-192.png')) ?>"><?php endif; ?>
+<?php if (S('logo')): ?><link rel="icon" href="<?= e(img_url(S('logo'))) ?>"><?php else: ?><link rel="icon" href="<?= e(url('favicon.ico')) ?>?v=271" sizes="48x48"><?php foreach ([48, 96, 144, 192] as $fz): ?><link rel="icon" type="image/png" sizes="<?= $fz ?>x<?= $fz ?>" href="<?= e(url('assets/img/gicon-' . $fz . '.png')) ?>?v=271"><?php endforeach; ?><?php endif; ?>
 <link rel="apple-touch-icon" href="<?= e(url('assets/img/apple-touch-icon.png') . '?v=270') ?>"><link rel="manifest" href="<?= e(url('site.webmanifest')) ?>">
 <?= $GLOBALS['jb_lcp'] ?? '' ?><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Jost:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
